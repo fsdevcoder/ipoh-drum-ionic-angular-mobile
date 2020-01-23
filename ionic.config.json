@@ -1,0 +1,7 @@
+{
+  "name": "ipoh-drum-ionic-angular",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

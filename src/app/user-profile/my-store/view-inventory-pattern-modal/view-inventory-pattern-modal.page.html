@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeViewInventoryPatternModal()"></ion-icon>
+        </ion-col>
+        <ion-col size="10" style="text-align:left;white-space:normal;word-wrap:break-word;">
+          <b>View Inventory Pattern</b>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row style="height:100%;">
+    <ion-col size="12">
+      <ion-card style="margin:0;padding:5px;height:100%;">
+        <ion-list>
+          <ion-item>
+            <ion-label position="floating">Name</ion-label>
+            <ion-input [(ngModel)]="inventoryPatterns.name" disabled></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Description</ion-label>
+            <ion-input [(ngModel)]="inventoryPatterns.desc" disabled></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Cost</ion-label>
+            <ion-input [(ngModel)]="inventoryPatterns.cost" disabled></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Selling Price</ion-label>
+            <ion-input [(ngModel)]="inventoryPatterns.price" disabled></ion-input>
+          </ion-item>
+          <ion-item>
+            <ion-label position="floating">Quantity</ion-label>
+            <ion-input [(ngModel)]="inventoryPatterns.qty" disabled></ion-input>
+          </ion-item>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="7" style="color:#cbcbcb;">
+              On Sale
+            </ion-col>
+            <ion-col size="5">
+              <ion-toggle [(ngModel)]="inventoryPatterns.onsale" [checked]="inventoryPatterns.onsale" color="success" disabled></ion-toggle>
+            </ion-col>
+          </ion-row>
+        </ion-list>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-content>

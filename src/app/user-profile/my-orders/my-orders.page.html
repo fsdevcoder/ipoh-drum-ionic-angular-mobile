@@ -1,0 +1,78 @@
+<ion-content main>
+  <ion-refresher slot="fixed" (ionRefresh)="ionRefresh($event)">
+    <ion-refresher-content
+            pullingText="Pull to Refresh"
+            refreshingSpinner="crescent">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ng-container *ngIf="listOfUsersOrders?.length > 0 else noOrdersMade">
+    <ion-card>
+      <ion-buttons slot="start" style="padding:5px;">
+        <ion-menu-button style="border:1px solid #ebebeb;border-radius:5px;color:black;background:white;"></ion-menu-button>
+        <h3 style="width:100%;margin-left:10px;">
+          <b>My Order</b>
+        </h3>
+      </ion-buttons>
+      <ion-row>
+        <ion-col size="12">
+          <ion-row>
+            <ion-col size="6" *ngFor="let userorders of listOfUsersOrders">
+              <ion-card (click)="openViewOrderDetailsModal(userorders.id, userorders.uid)" style="margin:0;background:white;">
+                <ion-card-content>
+                <div>
+                  <h3 style="font-weight:bold;color:black;">
+                    <ion-label color="primary" style="white-space:normal;word-wrap:break-word;">
+                      {{userorders?.uid}}
+                    </ion-label>
+                  </h3>
+                </div>
+                <div style="font-size:12px;">
+                  Quantities:&nbsp;
+                  <b>
+                    {{userorders?.qty}}
+                  </b>
+                </div>
+                <div style="font-size:12px;">
+                  Grand Total:
+                  <br>
+                  <ion-label style="font-weight:bold;" color="warning">
+                    {{userorders?.grandtotal | myCurrency}}
+                  </ion-label>
+                </div>
+                <div style="font-size:12px;white-space:normal;word-wrap:break-word;">
+                  Date:&nbsp;
+                  <b>
+                    {{userorders?.created_at.toString()}}
+                  </b>
+                </div>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreUserOrders($event)">
+              <ion-infinite-scroll-content
+                      loadingSpinner="crescent">
+              </ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </ng-container>
+  <ng-template #noOrdersMade>
+    <ion-card style="height:100%">
+      <ion-buttons slot="start" style="padding:5px;">
+        <ion-menu-button style="border:1px solid #ebebeb;border-radius:5px;color:black;"></ion-menu-button>
+      </ion-buttons>
+      <ion-row>
+        <ion-col size="12" style="text-align:center;">
+          <h3 style="color:#e6e6e6;">
+            <ion-icon name="chatbubbles" style="font-size:8rem;"></ion-icon>
+            <br>
+            No Orders has been made yet!
+            <br>
+          </h3>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </ng-template>
+</ion-content>

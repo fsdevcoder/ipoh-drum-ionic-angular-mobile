@@ -1,0 +1,29 @@
+<ion-tabs>
+    <ion-tab-bar slot="/bottom">
+      <ion-tab-button [routerLink]="['/home']">
+        <ion-icon name="home"></ion-icon>
+        <ion-label>Home</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button [routerLink]="['/shop']">
+        <ion-icon name="archive"></ion-icon>
+        <ion-label>Shop</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button [routerLink]="['/shopping-cart']">
+        <ion-icon name="cart"></ion-icon>
+        <ion-label>Cart</ion-label>
+      </ion-tab-button>
+
+      <ion-tab-button [routerLink]="['/user-profile']">
+        <ion-icon name="contact"></ion-icon>
+        <ion-label>Profile</ion-label>
+      </ion-tab-button>
+    </ion-tab-bar>
+  </ion-tabs>
+<!--<nav class="navbar fixed-bottom navbar-light bg-light">
+  <a class="navbar-brand" [routerLink]="'/home'">Home</a>
+  <a class="navbar-brand" [routerLink]="'/shop'">Shop</a>
+  <a class="navbar-brand" [routerLink]="'/shopping-cart'">Shopping Cart</a>
+  <a class="navbar-brand" [routerLink]="'/user-profile'">User Profile</a>
+</nav>-->

@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeShippingManagementModal()"></ion-icon>
+        </ion-col>
+        <ion-col size="10" style="text-align:left;white-space:normal;word-wrap:break-word;">
+          <b>Shipping Plans Management</b>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="ionRefresh($event)">
+    <ion-refresher-content
+            pullingText="Pull to Refresh"
+            refreshingSpinner="crescent">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-row>
+    <ion-col size="12">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="12">
+          <div style="border:1px dashed #4285F4;text-align:center;color:rgba(66,133,244,0.4);" (click)="openCreateShippingPlanModal()">
+            <ion-icon name="boat" style="font-size:5rem;"></ion-icon>
+            <h3 style="margin-top:0;">Click here to create a new Shipping Plan</h3>
+          </div>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <h4 style="border-bottom:1px solid #f2f2f2;">
+            <b>Shipping Plans</b>
+          </h4>
+          <ion-row class="ion-align-items-center ion-justify-content-center">
+            <ion-col size="6" *ngFor="let shipping of listOfShippingsByStoreUid" style="text-align:center;">
+              <ion-card (click)="openEditShippingModal(shipping.uid, !!shipping.store_id)">
+                <ion-card-header>
+                  <ion-label [color]="shipping.store_id ? 'primary' : 'warning'"
+                             style="white-space:normal;word-wrap:break-word;text-align:left;font-weight:bold;">
+                    {{shipping?.name}}
+                  </ion-label>
+                </ion-card-header>
+                <ion-card-content>
+                  <b>{{shipping?.price | myCurrency}}</b>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreShippings($event)">
+              <ion-infinite-scroll-content
+                      loadingSpinner="crescent">
+              </ion-infinite-scroll-content>
+            </ion-infinite-scroll>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+</ion-content>

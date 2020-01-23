@@ -1,0 +1,202 @@
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="ionRefresh($event)">
+    <ion-refresher-content
+            pullingText="Pull to Refresh"
+            refreshingSpinner="crescent">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ion-card>
+    <ion-row>
+      <ion-col size="12">
+        <ion-row>
+          <ion-col size="12" style="padding:0;">
+            <ion-searchbar style="padding:5px;" color="light" [placeholder]="'Search..'"></ion-searchbar>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-card style="background-color:white;margin:0;padding-top:5px;">
+              <ng-image-slider [images]="imageObject"
+                               [infinite]="true"
+                               [showArrow]="false"
+                               [animationSpeed]="15" [imageSize]="{width:300, height:200}"></ng-image-slider>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+        <!--<ion-row>
+          <ion-col size="12">
+            <ng-container *ngIf="isLoadingCategories else finishedLoadingCategories">
+              <ion-skeleton-text animated></ion-skeleton-text>
+            </ng-container>
+            <ng-template #finishedLoadingCategories>
+              <ion-card style="margin:5px;padding:5px;background-color:white;">
+                <div style="width:100%;overflow-x:auto;white-space:nowrap;padding:5px;">
+                  <ion-button fill="clear" *ngFor="let categories of listOfCategories" (click)="selectCategory(categories.uid)">
+                    <ion-icon [name]="categories.icon"></ion-icon>
+                  </ion-button>
+                </div>
+              </ion-card>
+            </ng-template>
+          </ion-col>
+        </ion-row>-->
+
+        <ng-container *ngIf="isLoadingProductFeaturesAndProductInventories else finishedLoadingProductFeatures">
+          <ion-row>
+            <ion-col size="6">
+              <ion-card style="margin:5px;background:white;">
+                <ion-card-header style="padding:0;">
+                  <ion-thumbnail style="width:100%;height:80px;">
+                    <ion-skeleton-text animated></ion-skeleton-text>
+                  </ion-thumbnail>
+                </ion-card-header>
+                <ion-card-content style="padding-top:5px;padding-bottom:5px;">
+                  <ion-skeleton-text animated></ion-skeleton-text>
+                  <ion-skeleton-text animated width="40%"></ion-skeleton-text>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col size="6">
+              <ion-card style="margin:5px;background:white;">
+                <ion-card-header style="padding:0;">
+                  <ion-thumbnail style="width:100%;height:80px;">
+                    <ion-skeleton-text animated></ion-skeleton-text>
+                  </ion-thumbnail>
+                </ion-card-header>
+                <ion-card-content style="padding-top:5px;padding-bottom:5px;">
+                  <ion-skeleton-text animated></ion-skeleton-text>
+                  <ion-skeleton-text animated width="40%"></ion-skeleton-text>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col size="6">
+              <ion-card style="margin:5px;background:white;">
+                <ion-card-header style="padding:0;">
+                  <ion-thumbnail style="width:100%;height:80px;">
+                    <ion-skeleton-text animated></ion-skeleton-text>
+                  </ion-thumbnail>
+                </ion-card-header>
+                <ion-card-content style="padding-top:5px;padding-bottom:5px;">
+                  <ion-skeleton-text animated></ion-skeleton-text>
+                  <ion-skeleton-text animated width="40%"></ion-skeleton-text>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col size="6">
+              <ion-card style="margin:5px;background:white;">
+                <ion-card-header style="padding:0;">
+                  <ion-thumbnail style="width:100%;height:80px;">
+                    <ion-skeleton-text animated></ion-skeleton-text>
+                  </ion-thumbnail>
+                </ion-card-header>
+                <ion-card-content style="padding-top:5px;padding-bottom:5px;">
+                  <ion-skeleton-text animated></ion-skeleton-text>
+                  <ion-skeleton-text animated width="40%"></ion-skeleton-text>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col size="6">
+              <ion-card style="margin:5px;background:white;">
+                <ion-card-header style="padding:0;">
+                  <ion-thumbnail style="width:100%;height:80px;">
+                    <ion-skeleton-text animated></ion-skeleton-text>
+                  </ion-thumbnail>
+                </ion-card-header>
+                <ion-card-content style="padding-top:5px;padding-bottom:5px;">
+                  <ion-skeleton-text animated></ion-skeleton-text>
+                  <ion-skeleton-text animated width="40%"></ion-skeleton-text>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col size="6">
+              <ion-card style="margin:5px;background:white;">
+                <ion-card-header style="padding:0;">
+                  <ion-thumbnail style="width:100%;height:80px;">
+                    <ion-skeleton-text animated></ion-skeleton-text>
+                  </ion-thumbnail>
+                </ion-card-header>
+                <ion-card-content style="padding-top:5px;padding-bottom:5px;">
+                  <ion-skeleton-text animated></ion-skeleton-text>
+                  <ion-skeleton-text animated width="40%"></ion-skeleton-text>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+
+        </ng-container>
+        <ng-template #finishedLoadingProductFeatures>
+          <ion-row *ngFor="let productFeatures of listOfProductFeatures; let i = index;" style="margin-bottom:10px;">
+            <ion-col size="12">
+              <ion-card style="background-color:white;margin:0;">
+              <ion-row class="ion-align-items-center">
+                <ion-col size="6">
+                  <span style="text-align:left;font-size:20px;white-space:normal;word-wrap:break-word;">
+                    <b>{{productFeatures?.name}}</b>
+                  </span>
+                </ion-col>
+                <ion-col size="6" style="text-align:right;">
+                  <ion-button color="dark" fill="clear" (click)="showMore(productFeatures.uid)">
+                    Show More&nbsp;<ion-icon name="arrow-forward"></ion-icon>
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="6" *ngFor="let listOfItems of listOfProducts[i]">
+                  <ion-card (click)="viewProductDetail(listOfItems.uid)" style="margin:0;background-color:white;">
+                    <ion-card-header style="background-color:#ececec;padding:0;">
+                      <ng-container *ngIf="listOfItems.imgpath else noImageForProduct">
+                        <img [src]="listOfItems.imgpath" alt="prod_img" class="productImage">
+                      </ng-container>
+                      <ng-template #noImageForProduct>
+                        <img src="../../assets/images/default_product.png" alt="prod_img" class="productImage">
+                      </ng-template>
+                    </ion-card-header>
+                    <ion-card-content style="padding:5px;">
+                      <ion-row>
+                        <ion-col size="12" style="white-space:normal;padding-top:0;padding-bottom:0;">
+                          <b>{{listOfItems?.name}}</b>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="12" style="padding-top:0;padding-bottom:0;">
+                          <ng-container *ngIf="listOfItems?.promotion else noPromotion">
+                            <small>
+                              <b>{{listOfItems?.promoprice | myCurrency}}</b>
+                              <span>
+                                <ion-chip color="primary" style="font-size:10px;padding:5px;">
+                                  -{{listOfItems?.promopctg}}%
+                                </ion-chip>
+                              </span>
+                            </small>
+                          </ng-container>
+                          <ng-template #noPromotion>
+                            <small>
+                              <b>{{listOfItems?.price | myCurrency}}</b>
+                            </small>
+                          </ng-template>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="12">
+                          <small>
+                            <ng-container *ngIf="listOfItems.rating && listOfItems.rating > 0 else noItemRating">
+                              <star-rating [value]="listOfItems.rating" checkedcolor="#FFD100" uncheckedcolor="black" readonly="true"></star-rating>
+                            </ng-container>
+                            <ng-template #noItemRating>
+                              No Ratings Yet
+                            </ng-template>
+                            ({{listOfItems.salesqty}} sold)
+                          </small>
+                        </ion-col>
+                      </ion-row>
+                    </ion-card-content>
+                  </ion-card>
+                </ion-col>
+              </ion-row>
+              </ion-card>
+            </ion-col>
+          </ion-row>
+        </ng-template>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+</ion-content>

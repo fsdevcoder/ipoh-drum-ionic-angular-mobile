@@ -1,0 +1,214 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title style="padding:0 0 0 10px;">
+            <ion-row class="ion-align-items-center">
+                <ion-col size="12" style="text-align:left;padding:0;">
+                    <ion-icon name="arrow-back" style="font-size:25px;"
+                              (click)="closePlaySelectedVideoModal()"></ion-icon>
+                </ion-col>
+            </ion-row>
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ng-container *ngIf="isLoadingSelectedVideo else finishedLoadingVideo">
+        <ion-row>
+            <ion-col size="12">
+                <img src="../../../../assets/images/default_product.png" alt="video_thumbnail"
+                     style="object-fit:cover;">
+            </ion-col>
+        </ion-row>
+        <ion-row style="margin:10px 10px 0 10px;">
+            <ion-col size="12" style="padding-bottom:0;white-space:normal;word-wrap:break-word;">
+                <h3 style="margin-top:0;margin-bottom:0;">
+                    <ion-skeleton-text animated="true"></ion-skeleton-text>
+                </h3>
+            </ion-col>
+        </ion-row>
+        <ion-row style="margin:0 10px 0 10px;border-bottom:1px solid #e6e6e6;">
+            <ion-col size="12">
+                <ion-row class="ion-align-items-center">
+                    <ion-col size="12" style="text-align:left;">
+                        <ion-label style="width:30%;">
+                            <ion-skeleton-text animated="true" style="width:30%;"></ion-skeleton-text>
+                        </ion-label>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+        </ion-row>
+    </ng-container>
+    <ng-template #finishedLoadingVideo>
+        <!-- TODO: videogular does not support Youtube videos and Dacast -->
+        <ion-row>
+            <ion-col size="12">
+                <vg-player>
+                    <vg-buffering></vg-buffering>
+                    <vg-controls [vgAutohide]="true" [vgAutohideTime]="3">
+                        <vg-play-pause></vg-play-pause>
+                        <vg-scrub-bar [vgSlider]="false">
+                            <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+                            <vg-scrub-bar-current-time [vgSlider]="true"></vg-scrub-bar-current-time>
+                        </vg-scrub-bar>
+                        <vg-mute></vg-mute>
+                        <vg-fullscreen></vg-fullscreen>
+                    </vg-controls>
+                    <vg-buffering></vg-buffering>
+                    <video [vgMaster]="" [vgMedia]="media" #media [id]="'publicVideo_'+publicVideoUid" preload="auto">
+                        <source [src]="selectedPublicVideo?.videopath | videoUrlSanitizer" type="video/mp4">
+                    </video>
+                </vg-player>
+            </ion-col>
+        </ion-row>
+        <!--<ion-row>
+            <ion-col size="12">
+                <iframe [src]="selectedPublicVideo?.videopath | videoUrlSanitizer"
+                        style="object-fit:cover;"
+                        width="100%"
+                        height="100%"
+                        frameborder="0"
+                        webkitallowfullscreen
+                        mozallowfullscreen
+                        allowfullscreen></iframe>
+            </ion-col>
+        </ion-row>-->
+        <ion-row style="margin:10px 10px 0 10px;">
+            <ng-container *ngIf="selectedPublicVideo?.free === 1">
+                <ion-col size="12" style="padding-bottom:0;white-space:normal;word-wrap:break-word;text-align:left;">
+                    <h3 style="font-weight:bold;margin-top:0;margin-bottom:0;">{{selectedPublicVideo?.title}}</h3>
+                </ion-col>
+            </ng-container>
+            <ng-container *ngIf="selectedPublicVideo?.free !== 1">
+                <ion-col size="8" style="padding-bottom:0;white-space:normal;word-wrap:break-word;text-align:left;">
+                    <h3 style="font-weight:bold;margin-top:0;margin-bottom:0;">{{selectedPublicVideo?.title}}</h3>
+                </ion-col>
+                <ion-col size="4" style="text-align:right;">
+                <span class="badge badge-primary" style="font-size:17px;">
+                    {{selectedPublicVideo?.price | myCurrency}}
+                </span>
+                </ion-col>
+            </ng-container>
+        </ion-row>
+        <ion-row style="margin:0 10px 0 10px;border-bottom:1px solid #e6e6e6;">
+            <ion-col size="12">
+                <ion-row class="ion-align-items-center">
+                    <ion-col size="12" style="text-align:left;">
+                        <ion-label>
+                            {{selectedPublicVideo?.view}}&nbsp;Views&nbsp;&nbsp;|&nbsp;&nbsp;{{selectedPublicVideo?.created_at | date: 'mediumDate'}}
+                        </ion-label>
+                    </ion-col>
+                </ion-row>
+                <ion-row class="ion-align-items-center">
+                    <ion-col size="12" style="text-align:left;">
+                        <ion-chip style="margin:0;" color="primary">
+                            <ion-icon name="thumbs-up"></ion-icon>
+                            <ion-label>{{selectedPublicVideo?.like}}</ion-label>
+                        </ion-chip>
+                        &nbsp;&nbsp;
+                        <ion-chip style="margin:0;" color="tertiary">
+                            <ion-icon name="thumbs-down"></ion-icon>
+                            <ion-label>{{selectedPublicVideo?.dislike}}</ion-label>
+                        </ion-chip>
+                    </ion-col>
+                </ion-row>
+            </ion-col>
+        </ion-row>
+        <ion-row style="margin:0 10px 0 10px;">
+            <ion-col size="12" style="padding:10px 0 10px 0;">
+                <div style="border:1px solid #e6e6e6;border-radius:5px;padding:10px;margin:0;">
+                    {{selectedPublicVideo?.desc}}
+                </div>
+            </ion-col>
+        </ion-row>
+        <ion-row *ngIf="selectedPublicVideo?.free !== 1" style="border-bottom:1px solid #e6e6e6;">
+            <ion-col size="12">
+                <ion-button expand="full" color="primary" (click)="openPaymentInfoModal()">
+                    Buy Video
+                </ion-button>
+            </ion-col>
+        </ion-row>
+        <!--<ion-row style="border-bottom:1px solid #e6e6e6;">
+            <ion-col size="12">
+                <h5 style="font-weight:bold;padding-left:10px;margin-bottom:0;margin-top:10px;">
+                    {{selectedPublicVideo?.commentcount}}&nbsp;comment<span *ngIf="selectedPublicVideo?.commentcount > 1">s</span>
+                </h5>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col size="12">
+                <textarea class="form-control" rows="3" cols="20" placeholder="Write a Comment..."></textarea>
+            </ion-col>
+            <ion-col size="12" style="text-align:right;">
+                <ion-button fill="outline">Comment</ion-button>
+            </ion-col>
+        </ion-row>
+
+        <ng-container *ngIf="selectedPublicVideo?.commentcount > 0 else noComments">
+            <ion-list>
+                <ion-item *ngFor="let comment of listOfCommentsForSelectedVideo;let i = index;">
+                    <ion-row class="ion-align-items-center">
+                        <ion-col size="12">
+                            <div style="font-size:15px;">
+                                {{comment?.text}}
+                            </div>
+                        </ion-col>
+                        <ion-col size="12">
+                            <span style="color:grey;font-size:12px;">
+                              <ion-icon name="thumbs-up"></ion-icon>&nbsp;{{comment?.like}}
+                            </span>
+                            &nbsp;&nbsp;
+                            <span style="color:grey;font-size:12px;">
+                              <ion-icon name="thumbs-down"></ion-icon>&nbsp;{{comment?.dislike}}
+                            </span>
+                            <ng-container *ngIf="comment?.secondcomments?.length > 0">
+                                &nbsp;&nbsp;
+                                <span style="width:100%;text-align:right;font-size:12px;">
+                                    <a data-toggle="collapse" [href]="'#collapse_'+i" role="button" aria-expanded="false" [attr.aria-controls]="'collapse_'+i">
+                                      Show More
+                                    </a>
+                                </span>
+                                <div [id]="'collapse_'+i" class="collapse" style="margin-left:20px;">
+                                    <ion-list>
+                                        <ion-item *ngFor="let secondcomment of comment.secondcomments">
+                                            <ion-row>
+                                                <ion-col size="12">
+                                                    <div>
+                                                        {{secondcomment?.text}}
+                                                    </div>
+                                                </ion-col>
+                                                <ion-col size="12">
+                            <span style="color:grey;font-size:15px;">
+                              <ion-icon name="thumbs-up"></ion-icon>&nbsp;{{secondcomment?.like}}
+                            </span>
+                                                    &nbsp;&nbsp;
+                                                    <span style="color:grey;font-size:15px;">
+                              <ion-icon name="thumbs-down"></ion-icon>&nbsp;{{secondcomment?.dislike}}
+                            </span>
+                                                </ion-col>
+                                            </ion-row>
+                                        </ion-item>
+                                    </ion-list>
+                                </div>
+                            </ng-container>
+                        </ion-col>
+                    </ion-row>
+                </ion-item>
+                <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreComments($event)">
+                    <ion-infinite-scroll-content
+                            loadingSpinner="crescent">
+                    </ion-infinite-scroll-content>
+                </ion-infinite-scroll>
+            </ion-list>
+        </ng-container>
+        <ng-template #noComments>
+            <ion-row class="ion-align-items-center" style="border-top:1px solid #e6e6e6;">
+                <ion-col size="12" style="text-align:center;padding:0;">
+                    <ion-icon name="chatboxes" style="font-size:5rem;color:grey;"></ion-icon>
+                </ion-col>
+                <ion-col size="12" style="padding:0;color:grey;text-align:center;padding-bottom:20px;">
+                    No comments yet.
+                </ion-col>
+            </ion-row>
+        </ng-template>-->
+    </ng-template>
+</ion-content>

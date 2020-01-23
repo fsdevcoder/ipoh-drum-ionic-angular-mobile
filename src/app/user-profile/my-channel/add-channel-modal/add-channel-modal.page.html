@@ -1,0 +1,198 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeCreateChannelModal(false)"></ion-icon>
+        </ion-col>
+        <ion-col size="10" style="text-align:left;">
+          <b>Add Channel</b>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row style="margin:10px;">
+    <ion-col size="12">
+      <input type="file" multiple="false" style="display:none;" #channelImageContainer (change)="uploadChannelImage($event)">
+      <ng-container *ngIf="!temporaryChannelImageURL else uploadedChannelImage">
+        <span *ngIf="!temporaryChannelImageURL"
+              class="required">&nbsp;*</span>
+        <div style="border:1px dashed #4285F4;text-align:center;color:rgba(66,133,244,0.4);"
+             (click)="openChannelImageFilePicker()">
+          <ion-icon name="images" style="font-size:8rem;"></ion-icon>
+          <h5>Click here to upload a picture for your Channel.</h5>
+        </div>
+      </ng-container>
+      <ng-template #uploadedChannelImage>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="12">
+            <div style="border:1px dashed #4285F4;text-align:center;color:rgba(66,133,244,0.4);padding:10px;">
+              <img [src]="temporaryChannelImageURL" style="object-fit:cover;" class="rounded">
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="12" style="text-align:center;">
+            <ion-button color="warning" (click)="openChannelImageFilePicker()">
+              Change Photo
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ng-template>
+    </ion-col>
+  </ion-row>
+
+  <ion-card style="padding:10px;">
+    <ion-row>
+      <ion-col size="12">
+        <h4 style="padding-left:0;border-bottom:1px solid #e6e6e6;margin-top:0;">
+          <b>Channel Details</b>
+        </h4>
+        <div [formGroup]="channelInfoFormGroup">
+          <ion-row class="ion-align-items-center">
+            <ion-col size="4">
+              <b>Name<span *ngIf="channelInfoFormGroup.get('channelName').invalid"
+                           class="required">&nbsp;*</span></b>
+            </ion-col>
+            <ion-col size="8">
+              <input type="text" class="form-control"
+                     [(ngModel)]="channelNameModel"
+                     formControlName="channelName"
+                     [ngClass]="{'is-invalid': channelInfoFormGroup.get('channelName').invalid && channelInfoFormGroup.get('channelName').touched, 'is-valid': channelInfoFormGroup.get('channelName').valid}">
+              <ul class="error"
+                  *ngIf="channelInfoFormGroup.get('channelName').invalid && channelInfoFormGroup.get('channelName').touched">
+                <li *ngIf="channelInfoFormGroup.get('channelName').hasError('required')">
+                  Name is required.
+                </li>
+                <li *ngIf="(channelInfoFormGroup.get('channelName').hasError('minlength') || channelInfoFormGroup.get('channelName').hasError('maxlength'))">
+                  Name must be between {{channelNameMinLength}} to {{channelNameMaxLength}} characters.
+                </li>
+              </ul>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="4">
+              <b>Description<span *ngIf="channelInfoFormGroup.get('channelDescription').invalid"
+                                  class="required">&nbsp;*</span></b>
+            </ion-col>
+            <ion-col size="8">
+              <textarea rows="3" cols="20" class="form-control"
+                        [(ngModel)]="channelDescriptionModel"
+                        formControlName="channelDescription"
+                        [ngClass]="{'is-invalid': channelInfoFormGroup.get('channelDescription').invalid && channelInfoFormGroup.get('channelDescription').touched, 'is-valid': channelInfoFormGroup.get('channelDescription').valid}"></textarea>
+              <ul class="error"
+                  *ngIf="channelInfoFormGroup.get('channelDescription').invalid && channelInfoFormGroup.get('channelDescription').touched">
+                <li *ngIf="channelInfoFormGroup.get('channelDescription').hasError('required')">
+                  Description is required.
+                </li>
+                <li *ngIf="(channelInfoFormGroup.get('channelDescription').hasError('minlength') || channelInfoFormGroup.get('channelDescription').hasError('maxlength'))">
+                  Description must be between {{channelDescriptionMinLength}} to {{channelDescriptionMaxLength}} characters.
+                </li>
+              </ul>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="4">
+              <b>Contact Num<span *ngIf="channelInfoFormGroup.get('channelContactNum').invalid"
+                                  class="required">&nbsp;*</span></b>
+            </ion-col>
+            <ion-col size="8">
+              <input type="text" class="form-control"
+                     [(ngModel)]="channelContactNumModel"
+                     formControlName="channelContactNum"
+                     [ngClass]="{'is-invalid': channelInfoFormGroup.get('channelContactNum').invalid && channelInfoFormGroup.get('channelContactNum').touched, 'is-valid': channelInfoFormGroup.get('channelContactNum').valid}">
+              <ul class="error"
+                  *ngIf="channelInfoFormGroup.get('channelContactNum').invalid && channelInfoFormGroup.get('channelContactNum').touched">
+                <li *ngIf="channelInfoFormGroup.get('channelContactNum').hasError('required')">
+                  Contact Num is required.
+                </li>
+                <li *ngIf="(channelInfoFormGroup.get('channelContactNum').hasError('minlength') || channelInfoFormGroup.get('channelContactNum').hasError('maxlength'))">
+                  Contact Num must be between {{channelContactNumMinLength}} to {{channelContactNumMaxLength}} digits.
+                </li>
+                <li *ngIf="channelInfoFormGroup.get('channelContactNum').hasError('pattern')">
+                  Invalid Contact Num format. Should be (60123456789).
+                </li>
+              </ul>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="4">
+              <b>Email<span *ngIf="channelInfoFormGroup.get('channelEmail').invalid"
+                            class="required">&nbsp;*</span></b>
+            </ion-col>
+            <ion-col size="8">
+              <input type="text" class="form-control"
+                     [(ngModel)]="channelEmailModel"
+                     formControlName="channelEmail"
+                     [ngClass]="{'is-invalid': channelInfoFormGroup.get('channelEmail').invalid && channelInfoFormGroup.get('channelEmail').touched, 'is-valid': channelInfoFormGroup.get('channelEmail').valid}">
+              <ul class="error"
+                  *ngIf="channelInfoFormGroup.get('channelEmail').invalid && channelInfoFormGroup.get('channelEmail').touched">
+                <li *ngIf="channelInfoFormGroup.get('channelEmail').hasError('required')">
+                  Email is required.
+                </li>
+                <li *ngIf="channelInfoFormGroup.get('channelEmail').hasError('email')">
+                  Invalid Email format. Should be (johndoe@domain.com)
+                </li>
+              </ul>
+            </ion-col>
+          </ion-row>
+        </div>
+        <ion-row class="ion-align-items-center">
+          <ion-row class="ion-align-items-center">
+            <ion-col size="9" style="white-space:normal;word-wrap:break-word;">
+              <b>Channel belongs to a company?</b>
+            </ion-col>
+            <ion-col size="3">
+              <ion-toggle color="success" [checked]="selectedChannelBelongsToCompanyFlag"
+                          (ionChange)="toggleBelongsToCompanyFlag()"></ion-toggle>
+            </ion-col>
+          </ion-row>
+          <div style="border-radius:5px;border:1px solid #e6e6e6;width:100%;">
+            <ion-row class="ion-align-items-center" *ngIf="selectedChannelBelongsToCompanyFlag">
+              <ion-col size="5">
+                <b>Company<span *ngIf="!selectedCompany"
+                                class="required">&nbsp;*</span></b>
+              </ion-col>
+              <ion-col size="7">
+                <ionic-selectable
+                        [placeholder]="'Select a Company'"
+                        [(ngModel)]="selectedCompany"
+                        [items]="listOfCompanies"
+                        [hasInfiniteScroll]="true"
+                        (onInfiniteScroll)="retrieveMoreCompanies($event)"
+                        (onSearch)="searchForCompanies($event)"
+                        [canSearch]="true"
+                        itemValueField="id"
+                        itemTextField="name">
+                </ionic-selectable>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-align-items-center" *ngIf="selectedCompany">
+              <ion-col size="12">
+                <div class="alert alert-primary" role="alert" style="margin-bottom:0;white-space:normal;word-wrap:break-word;">
+                  {{selectedCompany?.address1}}
+                  <br>
+                  {{selectedCompany?.email1}}
+                  <br>
+                  {{selectedCompany?.tel1}}
+                </div>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ion-row>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="12">
+            <ion-button expand="block" (click)="createChannel()" [disabled]="channelInfoFormGroup.invalid
+          || temporaryChannelImageURL === undefined
+          || temporaryChannelImageURL === null || (selectedChannelBelongsToCompanyFlag && !selectedCompany)">
+              Create Channel
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+</ion-content>

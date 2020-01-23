@@ -1,0 +1,173 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeEditShippingModal(false)"></ion-icon>
+        </ion-col>
+        <ion-col size="8" style="text-align:left;">
+          <b>Modify Shipping Plan</b>
+        </ion-col>
+        <ion-col size="2" style="text-align:right;" *ngIf="allowToModify">
+          <ion-button fill="clear" (click)="updateShippingPlan()" [disabled]="shippingPlanFormGroup.invalid">
+            <ion-icon name="checkmark" style="font-size:25px;"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col size="2" style="text-align:right;" *ngIf="!allowToModify">
+          <ion-button fill="clear">
+            <ion-icon name="lock"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="isLoadingShipping else finishedLoadingShippingInfo">
+    <ion-row>
+      <ion-col size="12" style="text-align:center;">
+        <h3 style="color:#e6e6e6;">
+          <ion-icon name="boat" style="font-size:8rem;"></ion-icon>
+          <br>
+          No Warranty Selected!
+        </h3>
+      </ion-col>
+    </ion-row>
+  </ng-container>
+  <ng-template #finishedLoadingShippingInfo>
+    <ng-container *ngIf="allowToModify else readOnly">
+      <ion-row>
+        <ion-col size="12">
+          <ion-card style="margin:5px;">
+            <ion-card-content style="padding:5px;" [formGroup]="shippingPlanFormGroup">
+              <ion-row>
+                <ion-col size="12">
+                  <ion-list style="padding-top:0;padding-bottom:0;">
+                    <ion-item>
+                      <ion-label position="floating">Shipping Name<span class="required" *ngIf="shippingPlanFormGroup.get('shippingPlanName').invalid">*</span></ion-label>
+                      <ion-input [(ngModel)]="selectedShipping.name" formControlName="shippingPlanName"></ion-input>
+                    </ion-item>
+                    <ul class="error"
+                        *ngIf="shippingPlanFormGroup.get('shippingPlanName').invalid && shippingPlanFormGroup.get('shippingPlanName').touched">
+                      <li *ngIf="shippingPlanFormGroup.get('shippingPlanName').hasError('required')">
+                        Shipping Plan Name is required.
+                      </li>
+                      <li *ngIf="shippingPlanFormGroup.get('shippingPlanName').hasError('maxlength')">
+                        Shipping Plan Name cannot be more than {{shippingPlanNameMaxLength}} characters.
+                      </li>
+                    </ul>
+                    <ion-item>
+                      <ion-label position="floating">Description<span class="required" *ngIf="shippingPlanFormGroup.get('shippingPlanDescription').invalid">*</span></ion-label>
+                      <ion-textarea [(ngModel)]="selectedShipping.desc" formControlName="shippingPlanDescription"></ion-textarea>
+                    </ion-item>
+                    <ul class="error"
+                        *ngIf="shippingPlanFormGroup.get('shippingPlanDescription').invalid && shippingPlanFormGroup.get('shippingPlanDescription').touched">
+                      <li *ngIf="shippingPlanFormGroup.get('shippingPlanDescription').hasError('required')">
+                        Description is required.
+                      </li>
+                      <li *ngIf="(shippingPlanFormGroup.get('shippingPlanDescription').hasError('minlength') || shippingPlanFormGroup.get('shippingPlanDescription').hasError('maxlength'))">
+                        Description must be between {{shippingPlanDescriptionMinLength}} to {{shippingPlanDescriptionMaxLength}} characters.
+                      </li>
+                    </ul>
+                    <ion-item>
+                      <ion-label position="floating">Shipping Price<span class="required" *ngIf="shippingPlanFormGroup.get('shippingPlanPrice').invalid">*</span></ion-label>
+                      <ion-input [(ngModel)]="selectedShipping.price" formControlName="shippingPlanPrice"></ion-input>
+                    </ion-item>
+                    <ul class="error"
+                        *ngIf="shippingPlanFormGroup.get('shippingPlanPrice').invalid && shippingPlanFormGroup.get('shippingPlanPrice').touched">
+                      <li *ngIf="shippingPlanFormGroup.get('shippingPlanPrice').hasError('required')">
+                        Shipping Price is required.
+                      </li>
+                      <li *ngIf="shippingPlanFormGroup.get('shippingPlanPrice').hasError('maxlength')">
+                        Shipping Price cannot be more than {{shippingPlanPriceMaxLength}} digits.
+                      </li>
+                      <li *ngIf="shippingPlanFormGroup.get('shippingPlanPrice').hasError('pattern')">
+                        Invalid format for Shipping Price.
+                      </li>
+                    </ul>
+                    <ion-item>
+                      <ion-label position="floating">Max Weightage (KG)<span class="required" *ngIf="shippingPlanFormGroup.get('shippingPlanMaxWeightage').invalid">*</span></ion-label>
+                      <ion-input [(ngModel)]="selectedShipping.maxweight" formControlName="shippingPlanMaxWeightage"></ion-input>
+                    </ion-item>
+                    <ul class="error"
+                        *ngIf="shippingPlanFormGroup.get('shippingPlanMaxWeightage').invalid && shippingPlanFormGroup.get('shippingPlanMaxWeightage').touched">
+                      <li *ngIf="shippingPlanFormGroup.get('shippingPlanMaxWeightage').hasError('required')">
+                        Max Weightage (KG) is required.
+                      </li>
+                      <li *ngIf="shippingPlanFormGroup.get('shippingPlanMaxWeightage').hasError('maxlength')">
+                        Max Weightage (KG) cannot be more than {{shippingPlanMaxWeightageMaxLength}} digits.
+                      </li>
+                      <li *ngIf="shippingPlanFormGroup.get('shippingPlanMaxWeightage').hasError('pattern')">
+                        Invalid format for Max Weightage (KG).
+                      </li>
+                    </ul>
+                    <ion-item>
+                      <ion-label position="floating">Max Dimension<span class="required" *ngIf="shippingPlanFormGroup.get('shippingPlanMaxDimension').invalid">*</span></ion-label>
+                      <ion-input [(ngModel)]="selectedShipping.maxdimension" formControlName="shippingPlanMaxDimension"></ion-input>
+                    </ion-item>
+                    <ul class="error"
+                        *ngIf="shippingPlanFormGroup.get('shippingPlanMaxDimension').invalid && shippingPlanFormGroup.get('shippingPlanMaxDimension').touched">
+                      <li *ngIf="shippingPlanFormGroup.get('shippingPlanMaxDimension').hasError('required')">
+                        Max Dimension is required.
+                      </li>
+                      <li *ngIf="shippingPlanFormGroup.get('shippingPlanMaxDimension').hasError('maxlength')">
+                        Max Dimension cannot be more than {{shippingPlanMaxDimensionMaxLength}} digits.
+                      </li>
+                      <li *ngIf="shippingPlanFormGroup.get('shippingPlanMaxDimension').hasError('pattern')">
+                        Invalid format for Max Dimension.
+                      </li>
+                    </ul>
+                  </ion-list>
+                </ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="12">
+              <ion-button expand="full" color="danger" (click)="deleteShippingPlan()">
+                Delete Shipping Plan
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+    <ng-template #readOnly>
+      <ion-row>
+        <ion-col size="12">
+          <ion-card style="margin:5px;">
+            <ion-card-content style="padding:5px;">
+              <ion-row>
+                <ion-col size="12">
+                  <ion-list style="padding-top:0;padding-bottom:0;">
+                    <ion-item>
+                      <ion-label position="floating">Shipping Plan Name</ion-label>
+                      <ion-input [(ngModel)]="selectedShipping.name" disabled></ion-input>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="floating">Description</ion-label>
+                      <ion-textarea [(ngModel)]="selectedShipping.desc" disabled></ion-textarea>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="floating">Shipping Price</ion-label>
+                      <ion-input [(ngModel)]="selectedShipping.price" disabled></ion-input>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="floating">Max Weightage (KG)</ion-label>
+                      <ion-input [(ngModel)]="selectedShipping.maxweight" disabled></ion-input>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="floating">Max Dimension</ion-label>
+                      <ion-input [(ngModel)]="selectedShipping.maxdimension" disabled></ion-input>
+                    </ion-item>
+                  </ion-list>
+                </ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ng-template>
+  </ng-template>
+</ion-content>

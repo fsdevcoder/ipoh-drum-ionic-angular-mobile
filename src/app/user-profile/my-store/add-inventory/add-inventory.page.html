@@ -1,0 +1,659 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title style="padding:0 0 0 10px;">
+            <ion-row class="ion-align-items-center">
+                <ion-col size="2" style="text-align:left;padding:0;">
+                    <ion-icon name="arrow-back" style="font-size:25px;"
+                              (click)="closeCreateInventoryModal(false)"></ion-icon>
+                </ion-col>
+                <ion-col size="10" style="text-align:left;">
+                    <b>Add Inventory</b>
+                </ion-col>
+            </ion-row>
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-row>
+        <ion-col size="12">
+            <ion-row class="ion-align-items-center" style="border-bottom:1px solid #e6e6e6;">
+                <ion-col size="4">
+                    <ion-button fill="clear" style="width:100%;text-align:center;font-size:25px;"
+                                (click)="showWhichPage(1)">
+                        <ion-label [color]="inventoryInfoFormGroup.valid
+                        && temporaryInventorySliders.length > 0
+                        && temporaryInventoryThumbnail ? 'success' : 'danger'">1
+                        </ion-label>
+                        <ion-icon name="close" color="danger" style="font-size:10px;"
+                                  *ngIf="inventoryInfoFormGroup.invalid
+                        || temporaryInventorySliders.length <= 0
+                        || !temporaryInventoryThumbnail"></ion-icon>
+                        <ion-icon name="checkmark" color="success" style="font-size:15px;"
+                                  *ngIf="inventoryInfoFormGroup.valid
+                        && temporaryInventorySliders.length > 0
+                        && temporaryInventoryThumbnail"></ion-icon>
+                    </ion-button>
+                </ion-col>
+                <ion-col size="4">
+                    <ion-button fill="clear" style="width:100%;text-align:center;font-size:25px;"
+                                (click)="showWhichPage(2)">
+                        <ion-label color="success">2</ion-label>
+                        <ion-icon name="checkmark" color="success" style="font-size:15px;"></ion-icon>
+                    </ion-button>
+                </ion-col>
+                <ion-col size="4">
+                    <ion-button fill="clear" style="width:100%;text-align:center;font-size:25px;"
+                                (click)="showWhichPage(3)">
+                        <ion-label [color]="inventoryFamilyAndOrPatternsToInsert.length <= 0 ? 'danger' : 'success'">3
+                        </ion-label>
+                        <ion-icon name="close" color="danger" style="font-size:10px;"
+                                  *ngIf="inventoryFamilyAndOrPatternsToInsert.length <= 0"></ion-icon>
+                        <ion-icon name="checkmark" color="success" style="font-size:15px;"
+                                  *ngIf="inventoryFamilyAndOrPatternsToInsert.length > 0"></ion-icon>
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+            <ng-container *ngIf="showFirstPage">
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-row style="margin-bottom:15px;">
+                            <ion-col size="12">
+                                <ion-card style="padding:5px;margin:0;">
+                                    <ion-row class="ion-align-items-center">
+                                        <ion-col size="12">
+                                            <ng-container *ngIf="temporaryInventoryThumbnail else noThumbnailSelected">
+                                                <ion-row class="ion-align-items-center">
+                                                    <ion-col size="12"
+                                                             style="text-align:center !important;padding-bottom:0;">
+                                                        <img [src]="temporaryInventoryThumbnail" class="rounded mb-3"
+                                                             style="height:250px;margin-bottom:0;object-fit:cover;">
+                                                    </ion-col>
+                                                </ion-row>
+                                                <ion-row class="ion-align-items-center">
+                                                    <ion-col size="12"
+                                                             style="text-align:center !important;padding-top:0;">
+                                                        <label for="thumbnailUpload" class="custom-file-upload"
+                                                               style="width:100% !important;font-size:15px !important;">
+                                                            <ion-icon name="image"></ion-icon>&nbsp;&nbsp;Replace
+                                                            Thumbnail
+                                                        </label>
+                                                        <input type="file" id="thumbnailUpload" multiple="false"
+                                                               (change)="uploadInventoryThumbnail($event)">
+                                                    </ion-col>
+                                                </ion-row>
+                                            </ng-container>
+                                            <ng-template #noThumbnailSelected>
+                                                <div style="border:1px dashed #4285F4;text-align:center;color:rgba(66,133,244,0.4);"
+                                                     (click)="openThumbnailFilePicker()">
+                                                    <ion-icon name="image" style="font-size:8rem;"></ion-icon>
+                                                    <h3>Click here to upload Inventory's Thumbnail</h3>
+                                                    <input type="file" multiple="false" style="display:none;"
+                                                           #inventoryThumbnailContainer
+                                                           (change)="uploadInventoryThumbnail($event)">
+                                                </div>
+                                            </ng-template>
+                                        </ion-col>
+                                    </ion-row>
+                                </ion-card>
+                            </ion-col>
+
+                            <ion-col size="12">
+                                <ion-card style="padding:5px;margin:0;">
+                                    <ion-row>
+                                        <ion-col size="12">
+                                            <ion-row>
+                                                <ion-col size="12">
+                                                    <h3 style="border-bottom:1px solid #e6e6e6;margin-top:0;">Inventory
+                                                        Pictures</h3>
+                                                </ion-col>
+                                            </ion-row>
+                                            <ng-container
+                                                    *ngIf="temporaryInventorySliders?.length > 0 else noSlidersSelected">
+                                                <ion-row class="ion-align-items-center">
+                                                    <ion-col size="12">
+                                                        <ion-slides pager="true" [options]="inventoryImageSliderOptions"
+                                                                    style="margin:1px;">
+                                                            <ion-slide *ngFor="let url of temporaryInventorySliders">
+                                                                <img [src]="url" alt="product_image"
+                                                                     class="rounded mb-3"
+                                                                     style="height:300px;">
+                                                            </ion-slide>
+                                                        </ion-slides>
+                                                    </ion-col>
+                                                </ion-row>
+                                                <ion-row class="ion-align-items-center">
+                                                    <ion-col size="6" style="text-align:center;">
+                                                        <ion-button color="warning" expand="full" fill="clear"
+                                                                    (click)="resetSelectedInventoryImages()">
+                                                            Reset
+                                                        </ion-button>
+                                                    </ion-col>
+                                                    <ion-col size="6" style="text-align:center;">
+                                                        <ion-button color="primary" expand="full" fill="clear"
+                                                                    (click)="openSlidersFilePicker()">
+                                                            Add More
+                                                        </ion-button>
+                                                        <input type="file" multiple="true" style="display:none;"
+                                                               #inventorySlidersContainer
+                                                               (change)="uploadInventorySliders($event)">
+                                                    </ion-col>
+                                                </ion-row>
+                                            </ng-container>
+                                            <ng-template #noSlidersSelected>
+                                                <div style="border:1px dashed #4285F4;text-align:center;color:rgba(66,133,244,0.4);"
+                                                     (click)="openSlidersFilePicker()">
+                                                    <ion-icon name="images" style="font-size:8rem;"></ion-icon>
+                                                    <h5>Click here to upload Inventory's Sliders Images.
+                                                        (Max {{maxInventoryPhotoSlider}} images)</h5>
+                                                    <input type="file" multiple="true" style="display:none;"
+                                                           #inventorySlidersContainer
+                                                           (change)="uploadInventorySliders($event)">
+                                                </div>
+                                            </ng-template>
+                                        </ion-col>
+                                    </ion-row>
+                                </ion-card>
+                            </ion-col>
+
+                            <ion-col size="12">
+                                <ion-card style="padding:5px;margin:0;" [formGroup]="inventoryInfoFormGroup">
+                                    <ion-row>
+                                        <ion-col size="12" style="text-align:left !important;">
+                                            <h3>Inventory Details</h3>
+                                            <table class="table" style="margin-bottom:0;">
+                                                <tbody>
+                                                <tr>
+                                                    <td>
+                                                        <ion-row class="ion-align-items-center"
+                                                                 style="margin-bottom:5px;">
+                                                            <ion-col size="12">
+                                                                <b>
+                                                                    Inventory Name
+                                                                    <span *ngIf="inventoryInfoFormGroup.get('inventoryName').invalid"
+                                                                          class="required">&nbsp;*</span>
+                                                                </b>
+                                                            </ion-col>
+                                                            <ion-col size="12">
+                                                                <input type="text" class="form-control"
+                                                                       [(ngModel)]="inventoryNameModel"
+                                                                       formControlName="inventoryName"
+                                                                       [ngClass]="{'is-invalid': inventoryInfoFormGroup.get('inventoryName').invalid && inventoryInfoFormGroup.get('inventoryName').touched, 'is-valid': inventoryInfoFormGroup.get('inventoryName').valid}">
+                                                                <ul class="error"
+                                                                    *ngIf="inventoryInfoFormGroup.get('inventoryName').invalid && inventoryInfoFormGroup.get('inventoryName').touched">
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventoryName').hasError('required') && inventoryInfoFormGroup.get('inventoryName').touched">
+                                                                        Name is required.
+                                                                    </li>
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventoryName').hasError('minlength') && inventoryInfoFormGroup.get('inventoryName').touched">
+                                                                        Name must have at
+                                                                        least {{inventoryNameMinLength}}
+                                                                        characters.
+                                                                    </li>
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventoryName').hasError('maxlength') && inventoryInfoFormGroup.get('inventoryName').touched">
+                                                                        Name cannot be more
+                                                                        than {{inventoryNameMaxLength}}
+                                                                        characters.
+                                                                    </li>
+                                                                </ul>
+                                                            </ion-col>
+                                                        </ion-row>
+                                                        <ion-row class="ion-align-items-center"
+                                                                 style="margin-bottom:5px;">
+                                                            <ion-col size="12">
+                                                                <b>Code
+                                                                    <span *ngIf="inventoryInfoFormGroup.get('inventoryCode').invalid"
+                                                                          class="required">&nbsp;*</span>
+                                                                </b>
+                                                            </ion-col>
+                                                            <ion-col size="12">
+                                                                <input type="text" class="form-control"
+                                                                       [(ngModel)]="inventoryCodeModel"
+                                                                       formControlName="inventoryCode"
+                                                                       [ngClass]="{'is-invalid': inventoryInfoFormGroup.get('inventoryCode').invalid && inventoryInfoFormGroup.get('inventoryCode').touched, 'is-valid': inventoryInfoFormGroup.get('inventoryCode').valid}">
+                                                                <ul class="error"
+                                                                    *ngIf="inventoryInfoFormGroup.get('inventoryCode').invalid && inventoryInfoFormGroup.get('inventoryCode').touched">
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventoryCode').hasError('required') && inventoryInfoFormGroup.get('inventoryCode').touched">
+                                                                        Code is required.
+                                                                    </li>
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventoryCode').hasError('minlength') && inventoryInfoFormGroup.get('inventoryCode').touched">
+                                                                        Code must have at
+                                                                        least {{inventoryCodeMinLength}}
+                                                                        characters.
+                                                                    </li>
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventoryCode').hasError('maxlength') && inventoryInfoFormGroup.get('inventryCode').touched">
+                                                                        Code cannot be more
+                                                                        than {{inventoryCodeMaxLength}}
+                                                                        characters.
+                                                                    </li>
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventoryCode').hasError('pattern') && inventoryInfoFormGroup.get('inventryCode').touched">
+                                                                        Code must contain alphanumeric characters only.
+                                                                    </li>
+                                                                </ul>
+                                                            </ion-col>
+                                                        </ion-row>
+                                                        <ion-row class="ion-align-items-center"
+                                                                 style="margin-bottom:5px;">
+                                                            <ion-col size="12">
+                                                                <b>SKU
+                                                                    <span *ngIf="inventoryInfoFormGroup.get('inventorySKU').invalid"
+                                                                          class="required">&nbsp;*</span>
+                                                                </b>
+                                                            </ion-col>
+                                                            <ion-col size="12">
+                                                                <input type="text" class="form-control"
+                                                                       [(ngModel)]="inventorySKUModel"
+                                                                       formControlName="inventorySKU"
+                                                                       [ngClass]="{'is-invalid': inventoryInfoFormGroup.get('inventorySKU').invalid && inventoryInfoFormGroup.get('inventorySKU').touched, 'is-valid': inventoryInfoFormGroup.get('inventorySKU').valid}">
+                                                                <ul class="error"
+                                                                    *ngIf="inventoryInfoFormGroup.get('inventorySKU').invalid && inventoryInfoFormGroup.get('inventorySKU').touched">
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventorySKU').hasError('required') && inventoryInfoFormGroup.get('inventorySKU').touched">
+                                                                        SKU is required.
+                                                                    </li>
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventorySKU').hasError('minlength') && inventoryInfoFormGroup.get('inventorySKU').touched">
+                                                                        SKU must have at
+                                                                        least {{inventoryCodeMinLength}}
+                                                                        characters.
+                                                                    </li>
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventorySKU').hasError('maxlength') && inventoryInfoFormGroup.get('inventorySKU').touched">
+                                                                        SKU cannot be more
+                                                                        than {{inventoryCodeMaxLength}}
+                                                                        characters.
+                                                                    </li>
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventorySKU').hasError('pattern') && inventoryInfoFormGroup.get('inventorySKU').touched">
+                                                                        SKU must contain alphanumeric characters only.
+                                                                    </li>
+                                                                </ul>
+                                                            </ion-col>
+                                                        </ion-row>
+                                                        <ion-row class="ion-align-items-center"
+                                                                 style="margin-bottom:5px;">
+                                                            <ion-col size="12">
+                                                                <b>Description
+                                                                    <span *ngIf="inventoryInfoFormGroup.get('inventoryDescription').invalid"
+                                                                          class="required">&nbsp;*</span>
+                                                                </b>
+                                                            </ion-col>
+                                                            <ion-col size="12">
+                                                                <textarea cols="20" rows="3" class="form-control"
+                                                                          [(ngModel)]="inventoryDescriptionModel"
+                                                                          formControlName="inventoryDescription"
+                                                                          [ngClass]="{'is-invalid': inventoryInfoFormGroup.get('inventoryDescription').invalid && inventoryInfoFormGroup.get('inventoryDescription').touched, 'is-valid': inventoryInfoFormGroup.get('inventoryDescription').valid}"></textarea>
+                                                                <ul class="error"
+                                                                    *ngIf="inventoryInfoFormGroup.get('inventoryDescription').invalid && inventoryInfoFormGroup.get('inventoryDescription').touched">
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventoryDescription').hasError('required') && inventoryInfoFormGroup.get('inventoryDescription').touched">
+                                                                        Description is required.
+                                                                    </li>
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventoryDescription').hasError('minlength') && inventoryInfoFormGroup.get('inventoryDescription').touched">
+                                                                        Description must have at
+                                                                        least {{inventoryDescMinLength}}
+                                                                        characters.
+                                                                    </li>
+                                                                    <li *ngIf="inventoryInfoFormGroup.get('inventoryDescription').hasError('maxlength') && inventoryInfoFormGroup.get('inventoryDescription').touched">
+                                                                        Description cannot be more
+                                                                        than {{inventoryDescMaxLength}}
+                                                                        characters.
+                                                                    </li>
+                                                                </ul>
+                                                            </ion-col>
+                                                        </ion-row>
+
+                                                        <table class="table" style="margin-bottom:0;">
+                                                            <tbody>
+                                                            <tr>
+                                                                <th>Cost
+                                                                    <span *ngIf="inventoryInfoFormGroup.get('inventoryCost').invalid"
+                                                                          class="required">&nbsp;*</span>
+                                                                </th>
+                                                                <td>
+                                                                    <input type="text" class="form-control"
+                                                                           [(ngModel)]="inventoryCostModel"
+                                                                           formControlName="inventoryCost"
+                                                                           [ngClass]="{'is-invalid': inventoryInfoFormGroup.get('inventoryCost').invalid && inventoryInfoFormGroup.get('inventoryCost').touched, 'is-valid': inventoryInfoFormGroup.get('inventoryCost').valid}">
+                                                                    <ul class="error"
+                                                                        *ngIf="inventoryInfoFormGroup.get('inventoryCost').invalid && inventoryInfoFormGroup.get('inventoryCost').touched">
+                                                                        <li *ngIf="inventoryInfoFormGroup.get('inventoryCost').hasError('required') && inventoryInfoFormGroup.get('inventoryCost').touched">
+                                                                            Cost is required.
+                                                                        </li>
+                                                                        <li *ngIf="inventoryInfoFormGroup.get('inventoryCost').hasError('maxlength') && inventoryInfoFormGroup.get('inventoryCost').touched">
+                                                                            Cost cannot be more
+                                                                            than {{inventoryDescMaxLength}} digits.
+                                                                        </li>
+                                                                        <li *ngIf="inventoryInfoFormGroup.get('inventoryCost').hasError('pattern') && inventoryInfoFormGroup.get('inventoryCost').touched">
+                                                                            Cost format should be [123] or [123.00].
+                                                                        </li>
+                                                                    </ul>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Base Price<span
+                                                                        *ngIf="inventoryInfoFormGroup.get('inventoryBasePrice').invalid"
+                                                                        class="required">&nbsp;*</span>
+                                                                </th>
+                                                                <td>
+                                                                    <input type="text" class="form-control"
+                                                                           [(ngModel)]="inventoryBasePriceModel"
+                                                                           formControlName="inventoryBasePrice"
+                                                                           [ngClass]="{'is-invalid': inventoryInfoFormGroup.get('inventoryBasePrice').invalid && inventoryInfoFormGroup.get('inventoryBasePrice').touched, 'is-valid': inventoryInfoFormGroup.get('inventoryBasePrice').valid}">
+                                                                    <ul class="error"
+                                                                        *ngIf="inventoryInfoFormGroup.get('inventoryBasePrice').invalid && inventoryInfoFormGroup.get('inventoryBasePrice').touched">
+                                                                        <li *ngIf="inventoryInfoFormGroup.get('inventoryBasePrice').hasError('required') && inventoryInfoFormGroup.get('inventoryBasePrice').touched">
+                                                                            Base Price is required.
+                                                                        </li>
+                                                                        <li *ngIf="inventoryInfoFormGroup.get('inventoryBasePrice').hasError('maxlength') && inventoryInfoFormGroup.get('inventoryBasePrice').touched">
+                                                                            Base Price cannot be more
+                                                                            than {{inventoryDescMaxLength}}
+                                                                            digits.
+                                                                        </li>
+                                                                        <li *ngIf="inventoryInfoFormGroup.get('inventoryBasePrice').hasError('pattern') && inventoryInfoFormGroup.get('inventoryBasePrice').touched">
+                                                                            Base Price format should be [123] or
+                                                                            [123.00].
+                                                                        </li>
+                                                                    </ul>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <th>Stock's Threshold<span
+                                                                        *ngIf="inventoryInfoFormGroup.get('inventoryStockThreshold').invalid"
+                                                                        class="required">&nbsp;*</span>
+                                                                </th>
+                                                                <td>
+                                                                    <input type="text" class="form-control"
+                                                                           [(ngModel)]="inventoryStockThresholdModel"
+                                                                           formControlName="inventoryStockThreshold"
+                                                                           [ngClass]="{'is-invalid': inventoryInfoFormGroup.get('inventoryStockThreshold').invalid && inventoryInfoFormGroup.get('inventoryStockThreshold').touched, 'is-valid': inventoryInfoFormGroup.get('inventoryStockThreshold').valid}">
+                                                                    <ul class="error"
+                                                                        *ngIf="inventoryInfoFormGroup.get('inventoryStockThreshold').invalid && inventoryInfoFormGroup.get('inventoryStockThreshold').touched">
+                                                                        <li *ngIf="inventoryInfoFormGroup.get('inventoryStockThreshold').hasError('required') && inventoryInfoFormGroup.get('inventoryStockThreshold').touched">
+                                                                            Stock's Threshold is required.
+                                                                        </li>
+                                                                        <li *ngIf="inventoryInfoFormGroup.get('inventoryStockThreshold').hasError('maxlength') && inventoryInfoFormGroup.get('inventoryStockThreshold').touched">
+                                                                            Stock's Threshold cannot be more
+                                                                            than {{inventoryStockThresholdMaxLength}}
+                                                                            digits.
+                                                                        </li>
+                                                                        <li *ngIf="inventoryInfoFormGroup.get('inventoryStockThreshold').hasError('pattern') && inventoryInfoFormGroup.get('inventoryStockThreshold').touched">
+                                                                            Stock's Threshold must contain digits only.
+                                                                        </li>
+                                                                    </ul>
+                                                                </td>
+                                                            </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </ion-col>
+                                    </ion-row>
+                                </ion-card>
+                            </ion-col>
+                        </ion-row>
+                        <ion-row class="ion-align-items-center">
+                            <ion-col size="12">
+                                <ion-button expand="full" fill="clear" (click)="showWhichPage(2)">
+                                    Next
+                                </ion-button>
+                            </ion-col>
+                        </ion-row>
+                    </ion-col>
+                </ion-row>
+            </ng-container>
+            <ng-container *ngIf="showSecondPage">
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-card style="margin-bottom:10px;">
+                            <ion-row class="ion-align-items-center">
+                                <ion-col size="12" style="text-align:left !important;">
+                                    <h5 style="margin-top:0;padding:5px;font-weight:bold;">Promotion Details</h5>
+                                    <table class="table" style="margin-bottom:0;">
+                                        <tbody>
+                                        <tr>
+                                            <td style="padding-bottom:0;">
+                                                <ng-container *ngIf="isLoadingPromotionInfo else finishedLoadingPromotionInfo">
+                                                    <ion-row class="ion-align-items-center">
+                                                        <ion-col size="12" style="text-align:center;">
+                                                            <ion-spinner name="crescent"></ion-spinner>
+                                                        </ion-col>
+                                                    </ion-row>
+                                                </ng-container>
+                                                <ng-template #finishedLoadingPromotionInfo>
+                                                    <ion-row class="ion-align-items-center">
+                                                        <ion-col size="4">
+                                                            <b>Promotion Plan</b>
+                                                        </ion-col>
+                                                        <ion-col size="8">
+                                                            <ionic-selectable
+                                                                    [placeholder]="'Select Promotion'"
+                                                                    [(ngModel)]="selectedPromotionPlan"
+                                                                    [items]="listOfStorePromotions"
+                                                                    [hasInfiniteScroll]="true"
+                                                                    (onInfiniteScroll)="retrieveMorePromotions($event)"
+                                                                    (onSearch)="searchForPromotions($event)"
+                                                                    [canSearch]="true"
+                                                                    itemValueField="id"
+                                                                    itemTextField="name">
+                                                            </ionic-selectable>
+                                                        </ion-col>
+                                                    </ion-row>
+                                                    <ion-row class="ion-align-items-center"
+                                                             *ngIf="selectedPromotionPlan && selectedPromotionPlan.desc">
+                                                        <ion-col size="12">
+                                                            <div class="alert alert-primary" role="alert" style="margin-bottom:0;">
+                                                                {{selectedPromotionPlan?.desc}}
+                                                            </div>
+                                                        </ion-col>
+                                                    </ion-row>
+                                                </ng-template>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card>
+                        <ion-card style="margin-bottom:10px;">
+                            <ion-row class="ion-align-items-center">
+                                <ion-col size="12" style="text-align:left;">
+                                    <h5 style="margin-top:0;padding:5px;font-weight:bold;">Warranty Details</h5>
+                                    <table class="table" style="margin-bottom:0;">
+                                        <tbody>
+                                        <tr>
+                                            <td style="padding-bottom:0;">
+                                                <ng-container *ngIf="isLoadingWarrantyInfo else finishedLoadingWarrantyInfo">
+                                                    <ion-row class="ion-align-items-center">
+                                                        <ion-col size="12" style="text-align:center;">
+                                                            <ion-spinner name="crescent"></ion-spinner>
+                                                        </ion-col>
+                                                    </ion-row>
+                                                </ng-container>
+                                                <ng-template #finishedLoadingWarrantyInfo>
+                                                    <ion-row class="ion-align-items-center">
+                                                        <ion-col size="4">
+                                                            <b>Warranty Plan</b>
+                                                        </ion-col>
+                                                        <ion-col size="8">
+                                                            <ionic-selectable
+                                                                    [placeholder]="'Select Warranty'"
+                                                                    [(ngModel)]="selectedWarrantyPlan"
+                                                                    [items]="listOfStoreWarranties"
+                                                                    [hasInfiniteScroll]="true"
+                                                                    (onInfiniteScroll)="retrieveMoreWarranties($event)"
+                                                                    (onSearch)="searchForWarranties($event)"
+                                                                    [canSearch]="true"
+                                                                    itemValueField="id"
+                                                                    itemTextField="name">
+                                                            </ionic-selectable>
+                                                        </ion-col>
+                                                    </ion-row>
+                                                    <ion-row class="ion-align-items-center"
+                                                             *ngIf="selectedWarrantyPlan && selectedWarrantyPlan.desc">
+                                                        <ion-col size="12">
+                                                            <div class="alert alert-success" role="alert" style="margin-bottom:0;">
+                                                                {{selectedWarrantyPlan?.desc}}
+                                                            </div>
+                                                        </ion-col>
+                                                    </ion-row>
+                                                </ng-template>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card>
+                        <ion-card style="margin-bottom:10px;">
+                            <ion-row class="ion-align-items-center">
+                                <ion-col size="12" style="text-align:left;">
+                                    <h5 style="margin-top:0;padding:5px;font-weight:bold;">Shipping Details</h5>
+                                    <table class="table" style="margin-bottom:0;">
+                                        <tbody>
+                                        <tr>
+                                            <td style="padding-bottom:0;">
+                                                <ng-container *ngIf="isLoadingShippingInfo else finishedLoadingShippingInfo">
+                                                    <ion-row class="ion-align-items-center">
+                                                        <ion-col size="12" style="text-align:center;">
+                                                            <ion-spinner name="crescent"></ion-spinner>
+                                                        </ion-col>
+                                                    </ion-row>
+                                                </ng-container>
+                                                <ng-template #finishedLoadingShippingInfo>
+                                                    <ion-row class="ion-align-items-center">
+                                                        <ion-col size="4">
+                                                            <b>Shipping Plan</b>
+                                                        </ion-col>
+                                                        <ion-col size="8">
+                                                            <ionic-selectable
+                                                                    [placeholder]="'Select Shipping'"
+                                                                    [(ngModel)]="selectedShippingPlan"
+                                                                    [items]="listOfStoreShippings"
+                                                                    [hasInfiniteScroll]="true"
+                                                                    (onInfiniteScroll)="retrieveMoreShippings($event)"
+                                                                    (onSearch)="searchForShippings($event)"
+                                                                    [canSearch]="true"
+                                                                    itemValueField="id"
+                                                                    itemTextField="name">
+                                                            </ionic-selectable>
+                                                        </ion-col>
+                                                    </ion-row>
+                                                    <ion-row class="ion-align-items-center">
+                                                        <ion-col size="12">
+                                                            <div *ngIf="selectedShippingPlan && selectedShippingPlan.desc" class="alert alert-info"
+                                                                 role="alert">
+                                                                {{selectedShippingPlan?.desc}}
+                                                            </div>
+                                                        </ion-col>
+                                                    </ion-row>
+                                                </ng-template>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card>
+                    </ion-col>
+                    <ion-col size="6">
+                        <ion-button expand="full" fill="clear" (click)="showWhichPage(1)">
+                            Previous
+                        </ion-button>
+                    </ion-col>
+                    <ion-col size="6">
+                        <ion-button expand="full" fill="clear" (click)="showWhichPage(3)">
+                            Next
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ng-container>
+            <ng-container *ngIf="showThirdPage">
+                <ion-row>
+                    <ion-col size="12">
+                        <ion-card style="padding:5px;">
+                            <ion-row>
+                                <ion-col size="12">
+                                    <h3>
+                                        Inventory Families & Patterns
+                                        <span *ngIf="inventoryFamilyAndOrPatternsToInsert.length <= 0" class="required">*</span>
+                                    </h3>
+                                    <table class="table" style="margin-bottom:0;">
+                                        <tbody>
+                                        <tr>
+                                            <th>
+                                                <ion-row class="ion-align-items-center">
+                                                    <ion-col size="12" style="text-align:left;">
+                                                        <ion-button (click)="openAddInventoryFamilyAndPatternModal()"
+                                                                    color="warning"
+                                                                    style="white-space:normal;word-wrap:break-word;text-align:center;">
+                                                            ADD FAMILIES AND PATTERNS&nbsp;<ion-icon
+                                                                name="add-circle"></ion-icon>
+                                                        </ion-button>
+                                                    </ion-col>
+                                                </ion-row>
+                                            </th>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table" style="margin-bottom:0;">
+                                        <thead class="thead-dark">
+                                        <tr>
+                                            <th width="45%">Families</th>
+                                            <th width="50%">Patterns</th>
+                                            <th width="5%">Action</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody *ngIf="inventoryFamilyAndOrPatternsToInsert?.length === 0"
+                                               style="background-color:white;border-bottom:1px solid #f2f2f2;border-left:1px solid #f2f2f2;border-right:1px solid #f2f2f2;">
+                                        <tr>
+                                            <td colspan="3" style="color:grey;">No inventory families and patterns.</td>
+                                        </tr>
+                                        </tbody>
+                                        <tbody *ngIf="inventoryFamilyAndOrPatternsToInsert?.length > 0"
+                                               style="background-color:white;border-bottom:1px solid #f2f2f2;border-left:1px solid #f2f2f2;border-right:1px solid #f2f2f2;">
+                                        <tr *ngFor="let invFamilyPattern of inventoryFamilyAndOrPatternsToInsert;let i = index;">
+                                            <td>
+                                                <span class="badge badge-primary">{{invFamilyPattern?.name}}</span>
+                                            </td>
+                                            <td>
+                                                <ng-container
+                                                        *ngIf="invFamilyPattern?.patterns.length > 0 else noPattern">
+                                                <span class="badge badge-info"
+                                                      *ngFor="let pattern of invFamilyPattern?.patterns;let j = index;">
+                                                {{pattern?.name}}
+                                            </span>
+                                                </ng-container>
+                                                <ng-template #noPattern>
+                                                <span class="badge badge-dark">
+                                                    NONE
+                                                </span>
+                                                </ng-template>
+                                            </td>
+                                            <td>
+                                                <ion-button fill="clear" style="padding:0;"
+                                                            (click)="removeSelectedInventoryFamilyAndOrPattern(i)">
+                                                    <ion-icon name="trash" style="color:#cbcbcb;"></ion-icon>
+                                                </ion-button>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </ion-col>
+                            </ion-row>
+                        </ion-card>
+                    </ion-col>
+                </ion-row>
+                <ion-row style="height:100%;">
+                    <ion-col size="12">
+                        <ion-button expand="full" fill="clear" (click)="createInventory()"
+                                    [disabled]="inventoryInfoFormGroup.invalid
+                                        || inventoryFamilyAndOrPatternsToInsert.length <= 0
+                                        || temporaryInventorySliders.length <= 0
+                                        || temporaryInventoryThumbnail === undefined
+                                        || temporaryInventoryThumbnail === null
+                                        || inventoryFamilyAndOrPatternsToInsert.length <= 0">
+                            Create Inventory
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ng-container>
+        </ion-col>
+    </ion-row>
+</ion-content>

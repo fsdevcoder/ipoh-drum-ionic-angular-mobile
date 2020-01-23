@@ -1,0 +1,226 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeEditVoucherModal(false)"></ion-icon>
+        </ion-col>
+        <ion-col size="8" style="text-align:left;">
+          <b>Modify Voucher</b>
+        </ion-col>
+        <ion-col size="2" style="text-align:right;">
+          <ion-button fill="clear" (click)="updateVoucher()" [disabled]="storeVoucherFormGroup.invalid">
+            <ion-icon name="checkmark" style="font-size:25px;"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="isLoadingVoucher else finishedLoadingVoucherInfo">
+    <ion-row>
+      <ion-col size="12" style="text-align:center;">
+        <h3 style="color:#e6e6e6;">
+          <ion-icon name="albums" style="font-size:8rem;"></ion-icon>
+          <br>
+          No Voucher Selected!
+        </h3>
+      </ion-col>
+    </ion-row>
+  </ng-container>
+  <ng-template #finishedLoadingVoucherInfo>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card style="margin:5px;">
+          <ion-card-content style="padding:5px;" [formGroup]="storeVoucherFormGroup">
+            <ion-row>
+              <ion-col size="12">
+                <ion-list>
+                  <ion-item>
+                    <ion-label position="floating">Voucher Name<span class="required" *ngIf="storeVoucherFormGroup.get('voucherName').invalid">*</span></ion-label>
+                    <ion-input [(ngModel)]="selectedVoucher.name" formControlName="voucherName"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="storeVoucherFormGroup.get('voucherName').invalid && storeVoucherFormGroup.get('voucherName').touched">
+                    <li *ngIf="storeVoucherFormGroup.get('voucherName').hasError('required')">
+                      Voucher Name is required.
+                    </li>
+                    <li *ngIf="storeVoucherFormGroup.get('voucherName').hasError('maxlength') || storeVoucherFormGroup.get('voucherName').hasError('minlength')">
+                      Voucher Name must be between {{voucherNameMinLength}} to {{voucherNameMaxLength}} characters.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-label position="floating">Description<span class="required" *ngIf="storeVoucherFormGroup.get('voucherDescription').invalid">*</span></ion-label>
+                    <ion-textarea [(ngModel)]="selectedVoucher.desc" formControlName="voucherDescription"></ion-textarea>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="storeVoucherFormGroup.get('voucherDescription').invalid && storeVoucherFormGroup.get('voucherDescription').touched">
+                    <li *ngIf="storeVoucherFormGroup.get('voucherDescription').hasError('required')">
+                      Description is required.
+                    </li>
+                    <li *ngIf="storeVoucherFormGroup.get('voucherDescription').hasError('maxlength') || storeVoucherFormGroup.get('voucherDescription').hasError('minlength')">
+                      Description must be between {{voucherDescriptionMinLength}} to {{voucherDescriptionMaxLength}} characters.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-row class="ion-align-items-center">
+                      <ion-col size="9">
+                        Discount By Price
+                      </ion-col>
+                      <ion-col size="3">
+                        <ion-toggle color="success"
+                                    (ionChange)="toggleDiscountByPriceFlag()"
+                                    [checked]="voucherDiscountedByPriceFlagModel"
+                                    [(ngModel)]="voucherDiscountedByPriceFlagModel"
+                                    formControlName="voucherDiscountByPriceFlag"></ion-toggle>
+                      </ion-col>
+                    </ion-row>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">
+                      <span *ngIf="voucherDiscountedByPriceFlagModel">
+                        Discounted Price (RM)<span class="required" *ngIf="storeVoucherFormGroup.get('voucherDiscountedPrice').invalid">*</span>
+                      </span>
+                          <span *ngIf="!voucherDiscountedByPriceFlagModel" style="text-decoration:line-through;">
+                        Discounted Price (RM)<span class="required" *ngIf="storeVoucherFormGroup.get('voucherDiscountedPrice').invalid">*</span>
+                      </span>
+                    </ion-label>
+                    <ion-input [(ngModel)]="selectedVoucher.disc" formControlName="voucherDiscountedPrice"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="storeVoucherFormGroup?.get('voucherDiscountedPrice')?.invalid && storeVoucherFormGroup?.get('voucherDiscountedPrice')?.touched">
+                    <li *ngIf="storeVoucherFormGroup?.get('voucherDiscountedPrice')?.hasError('required')">
+                      Discounted Price is required.
+                    </li>
+                    <li *ngIf="storeVoucherFormGroup?.get('voucherDiscountedPrice')?.hasError('pattern')">
+                      Invalid format for Discounted Price. Should be (123.00) or (123).
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-label position="floating">
+                      <span *ngIf="!voucherDiscountedByPriceFlagModel">
+                        Discounted Percentage<span class="required" *ngIf="storeVoucherFormGroup.get('voucherDiscountedPrice').invalid">*</span>
+                      </span>
+                      <span *ngIf="voucherDiscountedByPriceFlagModel" style="text-decoration:line-through;">
+                        Discounted Percentage<span class="required" *ngIf="storeVoucherFormGroup.get('voucherDiscountedPrice').invalid">*</span>
+                      </span>
+                    </ion-label>
+                    <ion-input [(ngModel)]="selectedVoucher.discpctg" formControlName="voucherDiscountedPercentage"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="storeVoucherFormGroup?.get('voucherDiscountedPercentage')?.invalid && storeVoucherFormGroup?.get('voucherDiscountedPercentage')?.touched">
+                    <li *ngIf="storeVoucherFormGroup?.get('voucherDiscountedPercentage')?.hasError('required')">
+                      Discounted Percentage is required.
+                    </li>
+                    <li *ngIf="storeVoucherFormGroup?.get('voucherDiscountedPercentage')?.hasError('pattern')">
+                      Invalid format for Discounted Percentage. Should be integers only.
+                    </li>
+                    <li *ngIf="storeVoucherFormGroup?.get('voucherDiscountedPercentage')?.hasError('max')">
+                      Discounted Percentage cannot be larger than {{maxPercentageValue}}%.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-row class="ion-align-items-center">
+                      <ion-col size="9">
+                        Unlimited Voucher
+                      </ion-col>
+                      <ion-col size="3">
+                        <ion-toggle color="success"
+                                    [checked]="voucherUnlimitedVoucherFlagModel"
+                                    [(ngModel)]="voucherUnlimitedVoucherFlagModel"
+                                    formControlName="voucherUnlimitedVoucherFlag"></ion-toggle>
+                      </ion-col>
+                    </ion-row>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">Limited Quantity<span class="required" *ngIf="storeVoucherFormGroup.get('voucherLimitedQuantity').invalid">*</span></ion-label>
+                    <ion-input [(ngModel)]="selectedVoucher.qty" formControlName="voucherLimitedQuantity"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="storeVoucherFormGroup.get('voucherLimitedQuantity').invalid && storeVoucherFormGroup.get('voucherLimitedQuantity').touched">
+                    <li *ngIf="storeVoucherFormGroup.get('voucherLimitedQuantity').hasError('required')">
+                      Limited Quantity is required.
+                    </li>
+                    <li *ngIf="storeVoucherFormGroup.get('voucherLimitedQuantity').hasError('maxlength')">
+                      Limited Quantity cannot be more than {{voucherLimitedQuantityMaxLength}} digits.
+                    </li>
+                    <li *ngIf="storeVoucherFormGroup.get('voucherLimitedQuantity').hasError('pattern')">
+                      Limited Quantity should only contain numbers.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-label position="floating">Minimum Purchase Price (RM)<span class="required" *ngIf="storeVoucherFormGroup.get('voucherMinimumPurchasePrice').invalid">*</span></ion-label>
+                    <ion-input [(ngModel)]="selectedVoucher.minpurchase" formControlName="voucherMinimumPurchasePrice"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="storeVoucherFormGroup.get('voucherMinimumPurchasePrice').invalid && storeVoucherFormGroup.get('voucherMinimumPurchasePrice').touched">
+                    <li *ngIf="storeVoucherFormGroup.get('voucherMinimumPurchasePrice').hasError('required')">
+                      Min. Purchase Price is required.
+                    </li>
+                    <li *ngIf="storeVoucherFormGroup.get('voucherLimitedQuantity').hasError('pattern')">
+                      Invalid format for pricing.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-label position="floating">Minimum Purchase Quantity<span class="required" *ngIf="storeVoucherFormGroup.get('voucherMinimumPurchaseQuantity').invalid">*</span></ion-label>
+                    <ion-input [(ngModel)]="selectedVoucher.minqty" formControlName="voucherMinimumPurchaseQuantity"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="storeVoucherFormGroup.get('voucherMinimumPurchaseQuantity').invalid && storeVoucherFormGroup.get('voucherMinimumPurchaseQuantity').touched">
+                    <li *ngIf="storeVoucherFormGroup.get('voucherMinimumPurchaseQuantity').hasError('required')">
+                      Quantity is required.
+                    </li>
+                    <li *ngIf="storeVoucherFormGroup.get('voucherMinimumPurchaseQuantity').hasError('pattern')">
+                      Invalid format for quantity.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-label position="floating">Minimum Purchase Variety<span class="required" *ngIf="storeVoucherFormGroup.get('voucherMinimumPurchaseVariety').invalid">*</span></ion-label>
+                    <ion-input [(ngModel)]="selectedVoucher.minvariety" formControlName="voucherMinimumPurchaseVariety"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="storeVoucherFormGroup.get('voucherMinimumPurchaseVariety').invalid && storeVoucherFormGroup.get('voucherMinimumPurchaseQuantity').touched">
+                    <li *ngIf="storeVoucherFormGroup.get('voucherMinimumPurchaseVariety').hasError('required')">
+                      Variety is required.
+                    </li>
+                    <li *ngIf="storeVoucherFormGroup.get('voucherMinimumPurchaseVariety').hasError('pattern')">
+                      Invalid format for variety.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-label position="floating">Start Date<span class="required" *ngIf="storeVoucherFormGroup.get('voucherStartDate').invalid">*</span></ion-label>
+                    <ion-datetime placeholder="Select Start Date" (ionChange)="selectedStartDate($event)"
+                                  formControlName="voucherStartDate"
+                                  [(ngModel)]="voucherStartDateModel">
+                    </ion-datetime>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">End Date<span class="required" *ngIf="storeVoucherFormGroup.get('voucherEndDate').invalid">*</span></ion-label>
+                    <ion-datetime placeholder="Select End Date" [min]="voucherStartDateModel" (ionChange)="selectedEndDate($event)"
+                                  formControlName="voucherEndDate"
+                                  [(ngModel)]="voucherEndDateModel"></ion-datetime>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="storeVoucherFormGroup.get('voucherStartDate').invalid || storeVoucherFormGroup.get('voucherEndDate').invalid">
+                    <li *ngIf="storeVoucherFormGroup.get('voucherStartDate').hasError('invalidDate') || storeVoucherFormGroup.get('voucherEndDate').hasError('invalidDate')">
+                      End Date cannot be earlier than Start Date.
+                    </li>
+                  </ul>
+                </ion-list>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="12">
+            <ion-button expand="full" color="danger" (click)="deleteVoucher()">
+              Delete Voucher
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ng-template>
+</ion-content>

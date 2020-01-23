@@ -1,0 +1,141 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon *ngIf="!isLoadingSalesOrderInfo" name="arrow-back" style="font-size:25px;" (click)="closeViewSalesOrderModal()"></ion-icon>
+          <ion-spinner *ngIf="isLoadingSalesOrderInfo" name="crescent"></ion-spinner>
+        </ion-col>
+        <ion-col size="10" style="text-align:left;white-space:normal;word-wrap:break-word;">
+          <b>View Sales Order</b>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="isLoadingSalesOrderInfo else finishedLoadingSalesOrderInfo">
+    <ion-row>
+      <ion-col size="12" style="margin-top:10px;text-align:center !important;">
+        <ion-avatar style="height:100px;width:100px;margin:auto;">
+          <ion-skeleton-text animated="true"></ion-skeleton-text>
+        </ion-avatar>
+      </ion-col>
+      <ion-col size="12" style="text-align:center;">
+        <ion-label>
+          <ion-skeleton-text animated="true" style="width:100px;margin:auto;"></ion-skeleton-text>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card style="padding:5px;">
+          <ion-row>
+            <ion-col size="12">
+              <ion-list>
+                <ion-item>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                  </ion-label>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                  </ion-label>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                  </ion-label>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                  </ion-label>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ng-container>
+  <ng-template #finishedLoadingSalesOrderInfo>
+    <ion-card>
+      <ion-card-header style="padding-bottom:5px;font-weight:bold;border-bottom:1px solid #e6e6e6;">
+        <b style="font-size:24px;color:black;">Sales Order UID</b>&nbsp;&nbsp;
+        <ion-label color="primary" style="font-size:17px;">
+          {{selectedSalesOrder?.uid}}
+        </ion-label>
+      </ion-card-header>
+      <ion-card-content style="padding:0 5px 15px 5px;">
+        <ion-row class="ion-align-items-center">
+          <ion-col size="3" style="text-align:center !important;padding:5px 0 5px 0;">
+            <img [src]="storeObject?.imgpath ? storeObject?.imgpath : '../../../../assets/images/default_product.png'"
+                 style="border-radius:50%;height:50px;width:50px;object-fit:cover;">
+          </ion-col>
+          <ion-col size="9" style="text-align:left;padding:0 0 0 0;">
+            <b>{{storeObject?.name}}</b>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12" style="padding:0;">
+            <ion-card *ngFor="let soldInventory of selectedSalesOrder.saleitems" style="margin:5px 0 0 0;padding:3px;">
+              <ion-row style="border-bottom:1px solid #e6e6e6;">
+                <ion-col size="12">
+                  <div style="font-weight:bold;font-size:18px;white-space:normal;word-wrap:break-word;">
+                    {{soldInventory?.name.split(':')[0]}}
+                  </div>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="5" class="align-items-center">
+                  <img [src]="soldInventory?.imgpath ? soldInventory?.imgpath : '../../../../assets/images/default_product.png'"
+                       style="object-fit:cover;">
+                </ion-col>
+                <ion-col size="7" class="align-items-center">
+                  <div style="font-weight:bold;">
+                    <ng-container *ngIf="soldInventory?.name.split(':')[1]">
+                      <span class="badge badge-primary" style="white-space:normal;word-wrap:break-word;font-size:15px;text-align:left;margin-bottom:5px;">
+                          {{soldInventory?.name.split(':')[1]}}
+                      </span>
+                    </ng-container>
+                    <ng-container *ngIf="soldInventory?.name.split(':')[2]">
+                      <span class="badge badge-primary" style="white-space:normal;word-wrap:break-word;font-size:15px;text-align:left;margin-bottom:5px;">
+                          {{soldInventory?.name.split(':')[2]}}
+                      </span>
+                    </ng-container>
+                  </div>
+                  <div style="text-align:right;">
+                    {{soldInventory?.price | myCurrency}}&nbsp;x{{soldInventory?.qty}}
+                  </div>
+                  <div style="text-align:right;">
+                    Total Price:&nbsp;{{(soldInventory?.price * soldInventory?.qty) | myCurrency}}&nbsp;&nbsp;
+                  </div>
+                </ion-col>
+                <ion-col size="12" style="border-top:1px solid #e6e6e6;">
+                  <div style="text-align:right;font-size:18px;font-weight:bold;">
+                    Grand Total:&nbsp;{{((soldInventory?.price * soldInventory?.qty) - soldInventory?.disc) | myCurrency}}
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ng-template>
+</ion-content>

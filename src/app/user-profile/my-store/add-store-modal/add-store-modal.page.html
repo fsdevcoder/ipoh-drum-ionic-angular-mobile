@@ -1,0 +1,302 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeCreateStoreModal(false)"></ion-icon>
+        </ion-col>
+        <ion-col size="10" style="text-align:left;">
+          <b>Add Store</b>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row style="margin:10px;">
+    <ion-col size="12">
+      <input type="file" multiple="false" style="display:none;" #storeImageContainer (change)="uploadStoreImage($event)">
+      <ng-container *ngIf="!temporaryStoreImageURL else uploadedStoreImage">
+        <span class="required">*</span>
+        <div style="border:1px dashed #4285F4;text-align:center;color:rgba(66,133,244,0.4);"
+             (click)="openStoreImageFilePicker()">
+          <ion-icon name="images" style="font-size:8rem;"></ion-icon>
+          <h5>Click here to upload a picture for your Store.</h5>
+        </div>
+      </ng-container>
+      <ng-template #uploadedStoreImage>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="12">
+            <div style="border:1px dashed #4285F4;text-align:center;color:rgba(66,133,244,0.4);padding:10px;">
+              <img [src]="temporaryStoreImageURL" style="object-fit:cover;" class="rounded">
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="12" style="text-align:center;">
+            <ion-button color="warning" (click)="openStoreImageFilePicker()">
+              Change Photo
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ng-template>
+    </ion-col>
+  </ion-row>
+
+  <ion-card style="padding:10px;">
+    <ion-row>
+      <ion-col size="12">
+        <h4 style="padding-left:0;border-bottom:1px solid #e6e6e6;margin-top:0;">
+          <b>Store Details</b>
+        </h4>
+        <div [formGroup]="storeInfoFormGroup">
+          <ion-row class="ion-align-items-center">
+            <ion-col size="4" style="font-weight:bold;">
+              Name<span *ngIf="storeInfoFormGroup.get('storeName').invalid" class="required">*</span>
+            </ion-col>
+            <ion-col size="8">
+              <input type="text" class="form-control"
+                     [(ngModel)]="storeNameModel"
+                     formControlName="storeName"
+                     [ngClass]="{'is-invalid': storeInfoFormGroup.get('storeName').invalid && storeInfoFormGroup.get('storeName').touched, 'is-valid': storeInfoFormGroup.get('storeName').valid}">
+              <ul class="error"
+                  *ngIf="storeInfoFormGroup.get('storeName').invalid && storeInfoFormGroup.get('storeName').touched">
+                <li *ngIf="storeInfoFormGroup.get('storeName').hasError('required') && storeInfoFormGroup.get('storeName').touched">
+                  Name is required.
+                </li>
+                <li *ngIf="(storeInfoFormGroup.get('storeName').hasError('minlength') || storeInfoFormGroup.get('storeName').hasError('maxlength'))&& storeInfoFormGroup.get('storeName').touched">
+                  Name must be between {{storeNameMinLength}} to {{storeNameMaxLength}} characters.
+                </li>
+              </ul>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="4" style="font-weight:bold;">
+              Contact Num<span *ngIf="storeInfoFormGroup.get('storeContactNum').invalid" class="required">*</span>
+            </ion-col>
+            <ion-col size="8">
+              <input type="text" class="form-control"
+                     [(ngModel)]="storeContactNumModel"
+                     formControlName="storeContactNum"
+                     [ngClass]="{'is-invalid': storeInfoFormGroup.get('storeContactNum').invalid && storeInfoFormGroup.get('storeContactNum').touched, 'is-valid': storeInfoFormGroup.get('storeContactNum').valid}">
+              <ul class="error"
+                  *ngIf="storeInfoFormGroup.get('storeContactNum').invalid && storeInfoFormGroup.get('storeContactNum').touched">
+                <li *ngIf="storeInfoFormGroup.get('storeContactNum').hasError('required') && storeInfoFormGroup.get('storeContactNum').touched">
+                  Contact Num is required.
+                </li>
+                <li *ngIf="(storeInfoFormGroup.get('storeContactNum').hasError('minlength') || storeInfoFormGroup.get('storeContactNum').hasError('maxlength')) && storeInfoFormGroup.get('storeContactNum').touched">
+                  Contact Num must be between {{storeContactNumMinLength}} to {{storeContactNumMaxLength}} digits.
+                </li>
+                <li *ngIf="storeInfoFormGroup.get('storeContactNum').hasError('pattern') && storeInfoFormGroup.get('storeContactNum').touched">
+                  Invalid Contact Num format. Should be (60123456789).
+                </li>
+              </ul>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-align-items-center">
+            <ion-col size="4" style="font-weight:bold;">
+              Email<span *ngIf="storeInfoFormGroup.get('storeEmail').invalid" class="required">*</span>
+            </ion-col>
+            <ion-col size="8">
+              <input type="text" class="form-control"
+                     [(ngModel)]="storeEmailModel"
+                     formControlName="storeEmail"
+                     [ngClass]="{'is-invalid': storeInfoFormGroup.get('storeEmail').invalid && storeInfoFormGroup.get('storeEmail').touched, 'is-valid': storeInfoFormGroup.get('storeEmail').valid}">
+              <ul class="error"
+                  *ngIf="storeInfoFormGroup.get('storeEmail').invalid && storeInfoFormGroup.get('storeEmail').touched">
+                <li *ngIf="storeInfoFormGroup.get('storeEmail').hasError('required') && storeInfoFormGroup.get('storeEmail').touched">
+                  Email is required.
+                </li>
+                <li *ngIf="storeInfoFormGroup.get('storeEmail').hasError('email') && storeInfoFormGroup.get('storeEmail').touched">
+                  Invalid Email format. Should be (johndoe@domain.com)
+                </li>
+              </ul>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-align-items-center" style="border-bottom:1px solid #e6e6e6;">
+            <ion-col size="4" style="font-weight:bold;">
+              Description<span *ngIf="storeInfoFormGroup.get('storeDescription').invalid" class="required">*</span>
+            </ion-col>
+            <ion-col size="8">
+              <textarea cols="20" rows="3" class="form-control"
+                        [(ngModel)]="storeDescriptionModel"
+                        formControlName="storeDescription"
+                        [ngClass]="{'is-invalid': storeInfoFormGroup.get('storeDescription').invalid && storeInfoFormGroup.get('storeDescription').touched, 'is-valid': storeInfoFormGroup.get('storeDescription').valid}"></textarea>
+              <ul class="error"
+                  *ngIf="storeInfoFormGroup.get('storeDescription').invalid && storeInfoFormGroup.get('storeDescription').touched">
+                <li *ngIf="storeInfoFormGroup.get('storeDescription').hasError('required') && storeInfoFormGroup.get('storeDescription').touched">
+                  Description is required.
+                </li>
+                <li *ngIf="(storeInfoFormGroup.get('storeDescription').hasError('minlength') || storeInfoFormGroup.get('storeDescription').hasError('maxlength')) && storeInfoFormGroup.get('storeDescription').touched">
+                  Description must be between {{storeDescriptionMinLength}} to {{storeDescriptionMaxLength}} characters.
+                </li>
+              </ul>
+            </ion-col>
+          </ion-row>
+        </div>
+
+        <ion-row class="ion-align-items-center">
+          <ion-row class="ion-align-items-center">
+            <ion-col size="10">
+              <b>Does this store belongs to a company?</b>
+            </ion-col>
+            <ion-col size="2">
+              <ion-toggle color="success" [checked]="selectedStoreBelongsToCompanyFlag"
+                          (ionChange)="toggleBelongsToCompanyFlag()"></ion-toggle>
+            </ion-col>
+          </ion-row>
+          <div style="border-radius:5px;border:1px solid #e6e6e6;width:100%;">
+            <ion-row class="ion-align-items-center" *ngIf="selectedStoreBelongsToCompanyFlag">
+              <ion-col size="5">
+                <b>Company<span *ngIf="!selectedCompany" class="required">*</span></b>
+              </ion-col>
+              <ion-col size="7">
+                  <ionic-selectable
+                          [placeholder]="'Select a Company'"
+                          [(ngModel)]="selectedCompany"
+                          [items]="listOfCompanies"
+                          [hasInfiniteScroll]="true"
+                          (onInfiniteScroll)="retrieveMoreCompanies($event)"
+                          (onSearch)="searchForCompanies($event)"
+                          [canSearch]="true"
+                          itemValueField="id"
+                          itemTextField="name">
+                  </ionic-selectable>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-align-items-center" *ngIf="selectedCompany">
+              <ion-col size="12">
+                <div class="alert alert-primary" role="alert" style="margin-bottom:0;white-space:normal;word-wrap:break-word;">
+                  {{selectedCompany?.address1}}
+                  <br>
+                  {{selectedCompany?.email1}}
+                  <br>
+                  {{selectedCompany?.tel1}}
+                </div>
+              </ion-col>
+            </ion-row>
+          </div>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+
+  <div [formGroup]="storeAddressFormGroup">
+    <ion-card style="padding:10px;">
+      <h4 style="padding-left:0;border-bottom:1px solid #e6e6e6;">
+        <b>Address</b>
+      </h4>
+      <ion-row class="ion-align-items-center">
+        <ion-col size="12" style="font-weight:bold;">
+          No. & Street Name<span *ngIf="storeAddressFormGroup.get('noStreetName').invalid" class="required">*</span>
+        </ion-col>
+        <ion-col size="12">
+          <textarea cols="20" rows="2" class="form-control"
+                    [(ngModel)]="storeNoStreetNameModel"
+                    formControlName="noStreetName"
+                    [ngClass]="{'is-invalid': storeAddressFormGroup.get('noStreetName').invalid && storeAddressFormGroup.get('noStreetName').touched, 'is-valid': storeAddressFormGroup.get('noStreetName').valid}"></textarea>
+          <ul class="error"
+              *ngIf="storeAddressFormGroup.get('noStreetName').invalid && storeAddressFormGroup.get('noStreetName').touched">
+            <li *ngIf="storeAddressFormGroup.get('noStreetName').hasError('required') && storeAddressFormGroup.get('noStreetName').touched">
+            Building No. and Street Name is required.
+          </li>
+            <li *ngIf="storeAddressFormGroup.get('noStreetName').hasError('maxlength') && storeAddressFormGroup.get('noStreetName').touched">
+              Building No. and Street Name cannot be more than {{storeNoStreetNameMaxLength}} characters.
+            </li>
+          </ul>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-align-items-center">
+        <ion-col size="4" style="font-weight:bold;">
+          Post Code<span *ngIf="storeAddressFormGroup.get('storePostCode').invalid" class="required">*</span>
+        </ion-col>
+        <ion-col size="8">
+          <input type="text" class="form-control"
+                 [(ngModel)]="storePostCodeModel"
+                 formControlName="storePostCode"
+                 [ngClass]="{'is-invalid': storeAddressFormGroup.get('storePostCode').invalid && storeAddressFormGroup.get('storePostCode').touched, 'is-valid': storeAddressFormGroup.get('storePostCode').valid}">
+          <ul class="error"
+              *ngIf="storeAddressFormGroup.get('storePostCode').invalid && storeAddressFormGroup.get('storePostCode').touched">
+            <li *ngIf="storeAddressFormGroup.get('storePostCode').hasError('required') && storeAddressFormGroup.get('storePostCode').touched">
+              Post Code is required.
+            </li>
+            <li *ngIf="(storeAddressFormGroup.get('storePostCode').hasError('minlength') || storeAddressFormGroup.get('storePostCode').hasError('maxlength')) && storeAddressFormGroup.get('storePostCode').touched">
+              Post Code must be {{storePostCodeMinLength}} digits.
+            </li>
+          </ul>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-align-items-center">
+        <ion-col size="4" style="font-weight:bold;">
+          Country<span *ngIf="storeAddressFormGroup.get('storeCountry').invalid" class="required">*</span>
+        </ion-col>
+        <ion-col size="8">
+          <input type="text" class="form-control"
+                 [(ngModel)]="storeCountryModel"
+                 formControlName="storeCountry"
+                 [ngClass]="{'is-invalid': storeAddressFormGroup.get('storeCountry').invalid && storeAddressFormGroup.get('storeCountry').touched, 'is-valid': storeAddressFormGroup.get('storeCountry').valid}">
+          <ul class="error"
+              *ngIf="storeAddressFormGroup.get('storeCountry').invalid && storeAddressFormGroup.get('storeCountry').touched">
+            <li *ngIf="storeAddressFormGroup.get('storeCountry').hasError('required') && storeAddressFormGroup.get('storeCountry').touched">
+              Country is required.
+            </li>
+            <li *ngIf="storeAddressFormGroup.get('storeCountry').hasError('maxlength') && storeAddressFormGroup.get('storeCountry').touched">
+              Country cannot be more than {{storeCountryMaxLength}} characters.
+            </li>
+          </ul>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-align-items-center">
+        <ion-col size="4" style="font-weight:bold;">
+          State<span *ngIf="storeAddressFormGroup.get('storeState').invalid" class="required">*</span>
+        </ion-col>
+        <ion-col size="8">
+          <input type="text" class="form-control"
+                 [(ngModel)]="storeStateModel"
+                 formControlName="storeState"
+                 [ngClass]="{'is-invalid': storeAddressFormGroup.get('storeState').invalid && storeAddressFormGroup.get('storeState').touched, 'is-valid': storeAddressFormGroup.get('storeState').valid}">
+          <ul class="error"
+              *ngIf="storeAddressFormGroup.get('storeState').invalid && storeAddressFormGroup.get('storeState').touched">
+            <li *ngIf="storeAddressFormGroup.get('storeState').hasError('required') && storeAddressFormGroup.get('storeState').touched">
+              State is required.
+            </li>
+            <li *ngIf="storeAddressFormGroup.get('storeState').hasError('maxlength') && storeAddressFormGroup.get('storeState').touched">
+              State cannot be more than {{storeStateMaxLength}} characters.
+            </li>
+          </ul>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-align-items-center">
+        <ion-col size="4" style="font-weight:bold;">
+          City<span *ngIf="storeAddressFormGroup.get('storeCity').invalid" class="required">*</span>
+        </ion-col>
+        <ion-col size="8">
+          <input type="text" class="form-control"
+                 [(ngModel)]="storeCityModel"
+                 formControlName="storeCity"
+                 [ngClass]="{'is-invalid': storeAddressFormGroup.get('storeCity').invalid && storeAddressFormGroup.get('storeCity').touched, 'is-valid': storeAddressFormGroup.get('storeCity').valid}">
+          <ul class="error"
+              *ngIf="storeAddressFormGroup.get('storeCity').invalid && storeAddressFormGroup.get('storeCity').touched">
+            <li *ngIf="storeAddressFormGroup.get('storeCity').hasError('required') && storeAddressFormGroup.get('storeCity').touched">
+              City is required.
+            </li>
+            <li *ngIf="storeAddressFormGroup.get('storeCity').hasError('maxlength') && storeAddressFormGroup.get('storeCity').touched">
+              City cannot be more than {{storeCityMaxLength}} characters.
+            </li>
+          </ul>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-align-items-center" style="border-top:1px solid #e6e6e6;">
+        <ion-col size="12">
+          <ion-button expand="block" (click)="createStore()" [disabled]="storeInfoFormGroup.invalid
+          || storeAddressFormGroup.invalid
+          || temporaryStoreImageURL === undefined
+          || temporaryStoreImageURL === null || (selectedStoreBelongsToCompanyFlag && !selectedCompany)">
+            Create Store
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </div>
+</ion-content>

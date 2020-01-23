@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeInventoryManagementModal()"></ion-icon>
+        </ion-col>
+        <ion-col size="7" style="text-align:left;padding-right:15px;white-space:normal;word-wrap:break-word;">
+          <b>Inventory Management</b>
+        </ion-col>
+        <ion-col size="3">
+          <ng-container *ngIf="selectedStore?.imgpath else noStoreImg">
+            <img [src]="selectedStore?.imgpath" style="border-radius:50%;height:50px;width:50px;object-fit:cover;">
+          </ng-container>
+          <ng-template #noStoreImg>
+            <img src="../../../../assets/images/default_product.png" style="border-radius:50%;height:50px;width:50px;object-fit:cover;">
+          </ng-template>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="ionRefresh($event)">
+    <ion-refresher-content
+            pullingText="Pull to Refresh"
+            refreshingSpinner="crescent">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ng-container *ngIf="listOfInventoriesFromSelectedStore?.length > 0 else noInventoriesCreated">
+    <ion-row class="ion-align-items-center" style="margin-top:5px;">
+      <ion-col size="12">
+        <div style="border:1px dashed #4285F4;text-align:center;color:rgba(66,133,244,0.4);" (click)="openCreateInventoryModal()">
+          <ion-icon name="archive" style="font-size:5rem;"></ion-icon>
+          <h3 style="margin-top:0;">Click here to create a new Inventory</h3>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="6" *ngFor="let inventory of listOfInventoriesFromSelectedStore">
+        <ion-card style="margin:0;" (click)="openViewInventoryModal(inventory.uid, inventory.id)">
+          <ion-card-header style="background-color:#ececec;padding:0;">
+            <ng-container *ngIf="inventory.imgpath else noImageForInventory">
+              <img [src]="inventory?.imgpath" alt="inventory_img" class="productImage">
+            </ng-container>
+            <ng-template #noImageForInventory>
+              <img src="../../../../assets/images/default_product.png" alt="inventory_img" class="productImage">
+            </ng-template>
+          </ion-card-header>
+          <ion-card-content style="padding-left:5px;">
+            <span style="white-space:normal;word-wrap:break-word;">
+              <b>{{inventory?.name}}</b>
+            </span>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreInventoriesFromSelectedStore($event)">
+        <ion-infinite-scroll-content
+                loadingSpinner="crescent">
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ion-row>
+  </ng-container>
+  <ng-template #noInventoriesCreated>
+    <ion-card style="height:100%">
+      <ion-row>
+        <ion-col size="12" style="text-align:center;">
+          <h3 style="color:#e6e6e6;">
+            <ion-icon name="archive" style="font-size:8rem;"></ion-icon>
+            <br>
+            No Inventories yet! <br>Start adding now!
+            <br>
+            <ion-button fill="outline" style="margin-top:10px;" (click)="openCreateInventoryModal()">
+              Add Inventory&nbsp;&nbsp;<ion-icon name="add"></ion-icon>
+            </ion-button>
+          </h3>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </ng-template>
+</ion-content>

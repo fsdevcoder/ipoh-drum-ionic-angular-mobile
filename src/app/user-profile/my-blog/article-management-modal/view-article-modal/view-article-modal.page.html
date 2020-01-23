@@ -1,0 +1,133 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeViewArticleModal()"></ion-icon>
+        </ion-col>
+        <ion-col size="8" style="text-align:left;white-space:normal;word-wrap:break-word;">
+          <b>View Article</b>
+        </ion-col>
+        <ion-col size="2" *ngIf="!isLoadingArticleInfo" style="text-align:right;">
+          <ion-button fill="clear" (click)="openEditArticleModal()">
+            <ion-icon name="create"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="isLoadingArticleInfo else finishedLoadingArticle">
+    <ion-row>
+      <ion-col size="12" style="margin-top:10px;text-align:center !important;">
+        <img src="../../../../../assets/images/default_product.png" style="object-fit:cover;">
+      </ion-col>
+      <ion-col size="12" style="text-align:center;">
+        <ion-label>
+          <ion-skeleton-text animated="true" style="width:100px;margin:auto;"></ion-skeleton-text>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card style="padding:5px;">
+          <ion-row>
+            <ion-col size="12">
+              <ion-list>
+                <ion-item>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                  </ion-label>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                  </ion-label>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                  </ion-label>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                  </ion-label>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ng-container>
+  <ng-template #finishedLoadingArticle>
+    <ion-row>
+      <ion-col size="12">
+        <ion-row>
+          <ion-col size="12" style="margin-top:10px;text-align:center;">
+            <ng-container *ngIf="selectedArticle?.articleimages?.length > 0 else noArticleImages">
+              <ion-slides pager="true" [options]="articleImageSliderOptions">
+                <ion-slide  *ngFor="let images of selectedArticle?.articleimages">
+                  <img [src]="images?.imgpath" style="object-fit:cover;" class="rounded">
+                </ion-slide>
+              </ion-slides>
+            </ng-container>
+            <ng-template #noArticleImages>
+              <img src="../../../../../assets/images/default_product.png" style="object-fit:cover;" class="rounded">
+            </ng-template>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-card>
+              <ion-card-content style="padding:5px;">
+                <ion-list>
+                  <ion-item>
+                    <ion-label position="floating">Title</ion-label>
+                    <ion-input disabled [(ngModel)]="selectedArticle.title"></ion-input>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">Description</ion-label>
+                    <ion-textarea disabled [(ngModel)]="selectedArticle.desc"></ion-textarea>
+                  </ion-item>
+                  <ion-item>
+                    <ion-row class="ion-align-items-center">
+                      <ion-col size="8" style="color:#e6e6e6;">
+                        Is This Article Public?
+                      </ion-col>
+                      <ion-col size="4">
+                        <ion-toggle disabled [(ngModel)]="isArticlePublicScope" color="success"></ion-toggle>
+                      </ion-col>
+                    </ion-row>
+                  </ion-item>
+                </ion-list>
+              </ion-card-content>
+            </ion-card>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="12">
+                <ion-button expand="full" color="danger" (click)="deleteArticle()">
+                  Delete Article
+                </ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ng-template>
+</ion-content>

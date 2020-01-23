@@ -1,0 +1,163 @@
+<ion-header>
+  <ion-row style="padding:5px;">
+    <ion-col size="8" style="text-align:left;">
+      <span style="font-size:18px;color:grey;">
+        Define Inventory Pattern
+      </span>
+    </ion-col>
+    <ion-col size="4" style="text-align:right;">
+      <ion-icon name="close" (click)="closeModal()" style="font-size:25px;"></ion-icon>
+    </ion-col>
+  </ion-row>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col size="12">
+      <div [formGroup]="inventoryPatternFormGroup">
+        <ion-row style="border-bottom:1px solid #dddddd;">
+          <ion-col size="12">
+            <ion-row class="ion-align-items-center">
+              <ion-col size="12">
+                <b>Name</b>
+              </ion-col>
+              <ion-col size="12">
+                <input type="text" class="form-control"
+                       [(ngModel)]="inventoryPatternNameModel"
+                       formControlName="inventoryPatternName"
+                       [ngClass]="{'is-invalid': inventoryPatternFormGroup.get('inventoryPatternName').invalid && inventoryPatternFormGroup.get('inventoryPatternName').touched, 'is-valid': inventoryPatternFormGroup.get('inventoryPatternName').valid}">
+                <ul class="error"
+                    *ngIf="inventoryPatternFormGroup.get('inventoryPatternName').invalid && inventoryPatternFormGroup.get('inventoryPatternName').touched">
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternName').hasError('required') && inventoryPatternFormGroup.get('inventoryPatternName').touched">
+                    Pattern Name is required.
+                  </li>
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternName').hasError('maxlength') && inventoryPatternFormGroup.get('inventoryPatternName').touched">
+                    Pattern Name cannot be more
+                    than {{inventoryPatternNameMaxLength}} characters.
+                  </li>
+                </ul>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="12">
+                <b>Description</b>
+              </ion-col>
+              <ion-col size="12">
+                <textarea cols="20" rows="3" class="form-control"
+                          [(ngModel)]="inventoryPatternDescriptionModel"
+                          formControlName="inventoryPatternDescription"
+                          [ngClass]="{'is-invalid': inventoryPatternFormGroup.get('inventoryPatternDescription').invalid && inventoryPatternFormGroup.get('inventoryPatternDescription').touched, 'is-valid': inventoryPatternFormGroup.get('inventoryPatternDescription').valid}">
+                </textarea>
+                <ul class="error"
+                    *ngIf="inventoryPatternFormGroup.get('inventoryPatternDescription').invalid && inventoryPatternFormGroup.get('inventoryPatternDescription').touched">
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternDescription').hasError('required') && inventoryPatternFormGroup.get('inventoryPatternDescription').touched">
+                    Pattern Description is required.
+                  </li>
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternDescription').hasError('minlength') && inventoryPatternFormGroup.get('inventoryPatternDescription').touched">
+                    Pattern Description must have at
+                    least {{inventoryPatternDescMinLength}} characters.
+                  </li>
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternDescription').hasError('maxlength') && inventoryPatternFormGroup.get('inventoryPatternDescription').touched">
+                    Pattern Description cannot be more
+                    than {{inventoryPatternDescMaxLength}} characters.
+                  </li>
+                </ul>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="12">
+                <b>Cost</b>
+              </ion-col>
+              <ion-col size="12">
+                <input type="text" class="form-control"
+                       [(ngModel)]="inventoryPatternCostModel"
+                       formControlName="inventoryPatternCost"
+                       [ngClass]="{'is-invalid': inventoryPatternFormGroup.get('inventoryPatternCost').invalid && inventoryPatternFormGroup.get('inventoryPatternCost').touched, 'is-valid': inventoryPatternFormGroup.get('inventoryPatternCost').valid}">
+                <ul class="error"
+                    *ngIf="inventoryPatternFormGroup.get('inventoryPatternCost').invalid && inventoryPatternFormGroup.get('inventoryPatternCost').touched">
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternCost').hasError('required') && inventoryPatternFormGroup.get('inventoryPatternCost').touched">
+                    Pattern Cost is required.
+                  </li>
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternCost').hasError('maxlength') && inventoryPatternFormGroup.get('inventoryPatternCost').touched">
+                    Pattern Cost cannot be more
+                    than {{inventoryPatternCostMaxLength}} characters.
+                  </li>
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternCost').hasError('pattern') && inventoryPatternFormGroup.get('inventoryPatternCost').touched">
+                    Pattern Cost format must be [123] or [123.00].
+                  </li>
+                </ul>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="12">
+                <b>Selling Price</b>
+              </ion-col>
+              <ion-col size="12">
+                <input type="text" class="form-control"
+                       [(ngModel)]="inventoryPatternSellingPriceModel"
+                       formControlName="inventoryPatternSellingPrice"
+                       [ngClass]="{'is-invalid': inventoryPatternFormGroup.get('inventoryPatternSellingPrice').invalid && inventoryPatternFormGroup.get('inventoryPatternSellingPrice').touched, 'is-valid': inventoryPatternFormGroup.get('inventoryPatternSellingPrice').valid}">
+                <ul class="error"
+                    *ngIf="inventoryPatternFormGroup.get('inventoryPatternSellingPrice').invalid && inventoryPatternFormGroup.get('inventoryPatternSellingPrice').touched">
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternSellingPrice').hasError('required') && inventoryPatternFormGroup.get('inventoryPatternSellingPrice').touched">
+                    Pattern Selling Price is required.
+                  </li>
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternSellingPrice').hasError('maxlength') && inventoryPatternFormGroup.get('inventoryPatternSellingPrice').touched">
+                    Pattern Selling Price cannot be more
+                    than {{inventoryPatternSellingPriceMaxLength}} characters.
+                  </li>
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternSellingPrice').hasError('pattern') && inventoryPatternFormGroup.get('inventoryPatternSellingPrice').touched">
+                    Pattern Selling Price format must be [123] or [123.00].
+                  </li>
+                </ul>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="12">
+                <b>Quantity</b>
+              </ion-col>
+              <ion-col size="12">
+                <input type="text" class="form-control"
+                       [(ngModel)]="inventoryPatternStockQuantityModel"
+                       formControlName="inventoryPatternStockQuantity"
+                       [ngClass]="{'is-invalid': inventoryPatternFormGroup.get('inventoryPatternStockQuantity').invalid && inventoryPatternFormGroup.get('inventoryPatternStockQuantity').touched, 'is-valid': inventoryPatternFormGroup.get('inventoryPatternStockQuantity').valid}">
+                <ul class="error"
+                    *ngIf="inventoryPatternFormGroup.get('inventoryPatternStockQuantity').invalid && inventoryPatternFormGroup.get('inventoryPatternStockQuantity').touched">
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternStockQuantity').hasError('required') && inventoryPatternFormGroup.get('inventoryPatternStockQuantity').touched">
+                    Pattern Stock Quantity is required.
+                  </li>
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternStockQuantity').hasError('maxlength') && inventoryPatternFormGroup.get('inventoryPatternStockQuantity').touched">
+                    Pattern Stock Quantity cannot be more
+                    than {{inventoryPatternStockQuantityMaxLength}} characters.
+                  </li>
+                  <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternStockQuantity').hasError('pattern') && inventoryPatternFormGroup.get('inventoryPatternStockQuantity').touched">
+                    Pattern Stock Quantity must contain digits only.
+                  </li>
+                </ul>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="3">
+                <b>On Sale</b>
+              </ion-col>
+              <ion-col size="3" style="text-align:right;">
+                <ion-toggle color="success" [checked]="selectedPatternOnSaleToggle"
+                            (ionChange)="togglePatternOnSaleCheckbox()"></ion-toggle>
+              </ion-col>
+              <ion-col size="6"></ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="12">
+            <ion-button (click)="(inventoryPatternFormGroup.invalid) ? undefined : addPattern()"
+                        expand="full"
+                        [disabled]="inventoryPatternFormGroup.invalid">
+              Add Pattern
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </div>
+    </ion-col>
+  </ion-row>
+</ion-content>

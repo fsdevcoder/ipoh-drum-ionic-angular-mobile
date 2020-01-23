@@ -1,0 +1,77 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeSalesOrderManagementModal()"></ion-icon>
+        </ion-col>
+        <ion-col size="10" style="text-align:left;padding-right:15px;white-space:normal;word-wrap:break-word;">
+          <b>Sales Order Management</b>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="ionRefresh($event)">
+    <ion-refresher-content
+            pullingText="Pull to Refresh"
+            refreshingSpinner="crescent">
+    </ion-refresher-content>
+  </ion-refresher>
+  <ng-container *ngIf="listOfSalesOrders?.length > 0 else noSalesOrderMade">
+    <ion-row>
+      <ion-col size="6" *ngFor="let saleorder of listOfSalesOrders">
+        <ion-card (click)="openViewSalesOrderManagementModal(saleorder.id, saleorder.uid)" style="margin:0;background:white;">
+          <ion-card-content>
+            <div>
+              <h3 style="font-weight:bold;color:black;">
+                <ion-label color="primary" style="white-space:normal;word-wrap:break-word;">
+                  {{saleorder?.uid}}
+                </ion-label>
+              </h3>
+            </div>
+            <div style="font-size:12px;">
+              Quantities:&nbsp;
+              <b>
+                {{saleorder?.qty}}
+              </b>
+            </div>
+            <div style="font-size:12px;">
+              Grand Total:
+              <br>
+              <ion-label style="font-weight:bold;" color="warning">
+                {{saleorder?.grandtotal | myCurrency}}
+              </ion-label>
+            </div>
+            <div style="font-size:12px;white-space:normal;word-wrap:break-word;">
+              Date:&nbsp;
+              <b>
+                {{saleorder?.created_at.toString()}}
+              </b>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-infinite-scroll threshold="100px" (ionInfinite)="loadMoreSalesOrderFromSelectedStore($event)">
+        <ion-infinite-scroll-content
+                loadingSpinner="crescent">
+        </ion-infinite-scroll-content>
+      </ion-infinite-scroll>
+    </ion-row>
+  </ng-container>
+  <ng-template #noSalesOrderMade>
+    <ion-card style="height:100%">
+      <ion-row>
+        <ion-col size="12" style="text-align:center;">
+          <h3 style="color:#e6e6e6;">
+            <ion-icon name="book" style="font-size:8rem;"></ion-icon>
+            <br>
+            No Sales Order yet!
+          </h3>
+        </ion-col>
+      </ion-row>
+    </ion-card>
+  </ng-template>
+</ion-content>

@@ -1,0 +1,220 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeEditProductPromotionModal(false)"></ion-icon>
+        </ion-col>
+        <ion-col size="8" style="text-align:left;">
+          <b>Modify Promotion Plan</b>
+        </ion-col>
+        <ion-col size="2" style="text-align:right;" *ngIf="allowToModify">
+          <ion-button fill="clear" (click)="updateProductPromotionPlan()">
+            <ion-icon name="checkmark" style="font-size:25px;"></ion-icon>
+          </ion-button>
+        </ion-col>
+        <ion-col size="2" style="text-align:right;" *ngIf="!allowToModify">
+          <ion-button fill="clear">
+            <ion-icon name="lock"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="isLoadingProductPromotion else finishedLoadingPromotionInfo">
+    <ion-row>
+      <ion-col size="12" style="text-align:center;">
+        <h3 style="color:#e6e6e6;">
+          <ion-icon name="flame" style="font-size:8rem;"></ion-icon>
+          <br>
+          No Promotion Selected!
+        </h3>
+      </ion-col>
+    </ion-row>
+  </ng-container>
+  <ng-template #finishedLoadingPromotionInfo>
+    <ng-container *ngIf="allowToModify else readOnly">
+      <ion-row>
+      <ion-col size="12">
+        <ion-card style="margin:5px;">
+          <ion-card-content style="padding:5px;" [formGroup]="promotionPlanFormGroup">
+            <ion-row>
+              <ion-col size="12">
+                <ion-list style="padding-top:0;padding-bottom:0;">
+                  <ion-item>
+                    <ion-label position="floating">Promotion Name<span *ngIf="promotionPlanFormGroup.get('promotionPlanName').invalid" class="required">*</span></ion-label>
+                    <ion-input [(ngModel)]="selectedProductPromotion.name" formControlName="promotionPlanName"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="promotionPlanFormGroup.get('promotionPlanName').invalid && promotionPlanFormGroup.get('promotionPlanName').touched">
+                    <li *ngIf="promotionPlanFormGroup.get('promotionPlanName').hasError('required')">
+                      Name is required.
+                    </li>
+                    <li *ngIf="(promotionPlanFormGroup.get('promotionPlanName').hasError('minlength') || promotionPlanFormGroup.get('promotionPlanName').hasError('maxlength'))">
+                      Name must be between {{promotionPlanNameMinLength}} to {{promotionPlanNameMaxLength}} characters.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-label position="floating">Description<span *ngIf="promotionPlanFormGroup.get('promotionPlanDescription').invalid" class="required">*</span></ion-label>
+                    <ion-textarea [(ngModel)]="selectedProductPromotion.desc" formControlName="promotionPlanDescription"></ion-textarea>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="promotionPlanFormGroup.get('promotionPlanDescription').invalid && promotionPlanFormGroup.get('promotionPlanDescription').touched">
+                    <li *ngIf="promotionPlanFormGroup.get('promotionPlanDescription').hasError('required')">
+                      Description is required.
+                    </li>
+                    <li *ngIf="(promotionPlanFormGroup.get('promotionPlanDescription').hasError('minlength') || promotionPlanFormGroup.get('promotionPlanDescription').hasError('maxlength'))">
+                      Description must be between {{promotionPlanDescriptionMinLength}} to {{promotionPlanDescriptionMaxLength}} characters.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-label position="floating">Limited Quantity<span *ngIf="promotionPlanFormGroup.get('promotionPlanLimitedQuantity').invalid" class="required">*</span></ion-label>
+                    <ion-input [(ngModel)]="selectedProductPromotion.qty" formControlName="promotionPlanLimitedQuantity"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="promotionPlanFormGroup.get('promotionPlanLimitedQuantity').invalid && promotionPlanFormGroup.get('promotionPlanLimitedQuantity').touched">
+                    <li *ngIf="promotionPlanFormGroup.get('promotionPlanLimitedQuantity').hasError('required')">
+                      Limited Quantity is required.
+                    </li>
+                    <li *ngIf="promotionPlanFormGroup.get('promotionPlanLimitedQuantity').hasError('maxlength')">
+                      Limited Quantity cannot be more than {{promotionPlanLimitedQuantityMaxLength}} digits.
+                    </li>
+                    <li *ngIf="promotionPlanFormGroup.get('promotionPlanLimitedQuantity').hasError('pattern')">
+                      Limited Quantity should only contain numbers.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-row class="ion-align-items-center">
+                      <ion-col size="10">
+                        <ion-label>Discount By Price</ion-label>
+                      </ion-col>
+                      <ion-col size="2">
+                        <ion-toggle color="success"
+                                    (ionChange)="toggleDiscountByPriceFlag()"
+                                    [checked]="promotionPlanDiscountByPriceFlagModel"
+                                    [(ngModel)]="promotionPlanDiscountByPriceFlagModel"
+                                    formControlName="promotionPlanDiscountByPriceFlag"></ion-toggle>
+                      </ion-col>
+                    </ion-row>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">Discounted Price<span *ngIf="promotionPlanFormGroup.get('promotionPlanDiscountedPrice').invalid" class="required">*</span></ion-label>
+                    <ion-input [(ngModel)]="selectedProductPromotion.disc" formControlName="promotionPlanDiscountedPrice"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="promotionPlanFormGroup?.get('promotionPlanDiscountedPrice')?.invalid && promotionPlanFormGroup?.get('promotionPlanDiscountedPrice')?.touched">
+                    <li *ngIf="promotionPlanFormGroup?.get('promotionPlanDiscountedPrice')?.hasError('required')">
+                      Discounted Price is required.
+                    </li>
+                    <li *ngIf="promotionPlanFormGroup?.get('promotionPlanDiscountedPrice')?.hasError('pattern')">
+                      Invalid format for Discounted Price. Should be (123.00) or (123).
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-label position="floating">Discounted Percentage<span *ngIf="promotionPlanFormGroup.get('promotionPlanDiscountedPercentage').invalid" class="required">*</span></ion-label>
+                    <ion-input [(ngModel)]="selectedProductPromotion.discpctg" formControlName="promotionPlanDiscountedPercentage"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="promotionPlanFormGroup?.get('promotionPlanDiscountedPercentage')?.invalid && promotionPlanFormGroup?.get('promotionPlanDiscountedPercentage')?.touched">
+                    <li *ngIf="promotionPlanFormGroup?.get('promotionPlanDiscountedPercentage')?.hasError('required')">
+                      Discounted Percentage is required.
+                    </li>
+                    <li *ngIf="promotionPlanFormGroup?.get('promotionPlanDiscountedPercentage')?.hasError('pattern')">
+                      Invalid format for Discounted Percentage. Should be integers only.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-label position="floating">Start Date<span *ngIf="promotionPlanFormGroup.get('promotionPlanStartDate').invalid" class="required">*</span></ion-label>
+                    <ion-datetime placeholder="Select Start Date" formControlName="promotionPlanStartDate"
+                                  [(ngModel)]="selectedProductPromotion.promostartdate">
+                    </ion-datetime>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label position="floating">End Date<span *ngIf="promotionPlanFormGroup.get('promotionPlanEndDate').invalid" class="required">*</span></ion-label>
+                    <ion-datetime placeholder="Select End Date" formControlName="promotionPlanEndDate" [min]="selectedProductPromotion.promostartdate"
+                                  [(ngModel)]="selectedProductPromotion.promoenddate">
+                    </ion-datetime>
+                  </ion-item>
+                  <ul class="error" style="margin-bottom:5px;"
+                      *ngIf="promotionPlanFormGroup.get('promotionPlanStartDate').invalid || promotionPlanFormGroup.get('promotionPlanEndDate').invalid">
+                    <li *ngIf="promotionPlanFormGroup.get('promotionPlanStartDate').hasError('invalidDate') || promotionPlanFormGroup.get('promotionPlanEndDate').hasError('invalidDate')">
+                      End Date cannot be earlier than Start Date.
+                    </li>
+                  </ul>
+                </ion-list>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+        <ion-button color="danger" expand="full" (click)="deleteProductPromotion()" style="margin-top:5px;">
+          Delete Promotion Plan
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    </ng-container>
+    <ng-template #readOnly>
+      <ion-row>
+        <ion-col size="12">
+          <ion-card style="margin:5px;">
+            <ion-card-content style="padding:5px;">
+              <ion-row>
+                <ion-col size="12">
+                  <ion-list style="padding-top:0;padding-bottom:0;">
+                    <ion-item>
+                      <ion-label position="floating">Promotion Name</ion-label>
+                      <ion-input [(ngModel)]="selectedProductPromotion.name" disabled></ion-input>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="floating">Description</ion-label>
+                      <ion-textarea [(ngModel)]="selectedProductPromotion.desc" disabled></ion-textarea>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="floating">Limited Quantity</ion-label>
+                      <ion-input [(ngModel)]="selectedProductPromotion.qty" disabled></ion-input>
+                    </ion-item>
+                    <ion-item>
+                      <ion-row class="ion-align-items-center">
+                        <ion-col size="10">
+                          <ion-label>Discount By Price</ion-label>
+                        </ion-col>
+                        <ion-col size="2">
+                          <ion-toggle color="success" disabled
+                                      (ionChange)="toggleDiscountByPriceFlag()"
+                                      [checked]="promotionPlanDiscountByPriceFlagModel"
+                                      [(ngModel)]="promotionPlanDiscountByPriceFlagModel"></ion-toggle>
+                        </ion-col>
+                      </ion-row>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="floating">Discounted Price</ion-label>
+                      <ion-input [(ngModel)]="selectedProductPromotion.disc" disabled></ion-input>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="floating">Discounted Percentage</ion-label>
+                      <ion-input [(ngModel)]="selectedProductPromotion.discpctg" disabled></ion-input>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="floating">Start Date</ion-label>
+                      <ion-datetime placeholder="Select Start Date" disabled
+                                    [(ngModel)]="selectedProductPromotion.promostartdate">
+                      </ion-datetime>
+                    </ion-item>
+                    <ion-item>
+                      <ion-label position="floating">End Date</ion-label>
+                      <ion-datetime placeholder="Select End Date" [min]="selectedProductPromotion.promostartdate" disabled
+                                    [(ngModel)]="selectedProductPromotion.promoenddate">
+                      </ion-datetime>
+                    </ion-item>
+                  </ion-list>
+                </ion-col>
+              </ion-row>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ng-template>
+  </ng-template>
+</ion-content>

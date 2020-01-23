@@ -1,0 +1,158 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title style="padding:0 0 0 10px;">
+            <ng-container *ngIf="isLoadingInventory else loadTitleButtons">
+                <ion-row>
+                    <ion-col size="12" style="text-align:center;">
+                        <ion-spinner name="crescent"></ion-spinner>
+                    </ion-col>
+                </ion-row>
+            </ng-container>
+            <ng-template #loadTitleButtons>
+                <ion-row class="ion-align-items-center">
+                    <ion-col size="2" class="align-self-center" style="width:100%;text-align:left;">
+                    <span>
+                        <ion-icon name="arrow-back" style="font-size:25px;" (click)="backToShopPage()"></ion-icon>
+                    </span>
+                    </ion-col>
+                    <ion-col size="10" style="text-align:right;">
+                        <ion-button fill="clear">
+                            <ion-icon slot="icon-only" name="share"></ion-icon>
+                        </ion-button>
+                        <ion-button fill="clear">
+                            <ion-icon slot="icon-only" name="more"></ion-icon>
+                        </ion-button>
+                    </ion-col>
+                </ion-row>
+            </ng-template>
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <!-- Product Image -->
+    <section style="background-color:white;margin-bottom:10px;">
+    <ion-row style="border-bottom:1px solid #f7f7f7;">
+        <ion-col size="12" style="padding:0;">
+            <ng-container *ngIf="!isLoadingInventory">
+                <ion-slides pager="true" [options]="ionSliderOptions">
+                    <ion-slide>
+                        <img [src]="currentInventory?.imgpath" alt="product_image">
+                    </ion-slide>
+                </ion-slides>
+            </ng-container>
+            <ng-container *ngIf="isLoadingInventory">
+                <ion-slides pager="true" [options]="ionSliderOptions">
+                    <ion-slide>
+                        <img src="../../../assets/images/default_product.png" alt="product_image">
+                    </ion-slide>
+                </ion-slides>
+            </ng-container>
+        </ion-col>
+    </ion-row>
+    <!-- Product Name -->
+    <ion-row>
+        <ion-col size="12">
+            <ng-container *ngIf="isLoadingInventory else loadInventoryInfo">
+                <h5>Loading...</h5>
+            </ng-container>
+            <ng-template #loadInventoryInfo>
+                <ion-row>
+                    <ion-col size="12">
+                        <h3>
+                            {{currentInventory?.name}}
+                        </h3>
+                    </ion-col>
+                </ion-row>
+                <ion-row>
+                    <ion-col size="12">
+                        <ng-container *ngIf="currentInventory.promotion else noPromoPrice">
+                            <ion-label style="font-size:20px;text-decoration:line-through;color:#e3e3e3;">
+                                {{currentInventory?.price | myCurrency}}
+                            </ion-label>
+                            <ion-chip color="primary" style="margin-left:5px;">
+                                -{{currentInventory?.promopctg}}%
+                            </ion-chip>
+                            <br>
+                            <ion-label style="font-size:30px;">
+                                <b>{{currentInventory.promoprice | myCurrency}}</b>
+                            </ion-label>
+                        </ng-container>
+                        <ng-template #noPromoPrice>
+                            <ion-label style="font-size:30px;">
+                                <b>{{currentInventory?.price | myCurrency}}</b>
+                            </ion-label>
+                        </ng-template>
+                        <br>
+                        <ng-container *ngIf="currentInventory.rating && currentInventory.rating > 0 else noInventoryRating">
+                            <star-rating [value]="currentInventory.rating" checkedcolor="#FFD100" uncheckedcolor="black" readonly="true"></star-rating>
+                        </ng-container>
+                        <ng-template #noInventoryRating>
+                            No Ratings Yet&nbsp;&nbsp;|&nbsp;&nbsp;
+                        </ng-template>
+                        <ion-chip color="primary">{{currentInventory.salesqty}}</ion-chip>&nbsp;sold
+                        <br>
+                        <ion-chip color="primary">{{currentInventory.qty}}</ion-chip>&nbsp;stock quantity
+                        <br>
+                        <ion-chip outline style="margin-left:0;" (click)="openProductVariationsModal()">
+                            <ion-icon name="cart" color="primary"></ion-icon>
+                            <ion-label>Add To Cart</ion-label>
+                            <ion-icon name="add-circle" color="primary"></ion-icon>
+                        </ion-chip>
+                    </ion-col>
+                </ion-row>
+            </ng-template>
+        </ion-col>
+    </ion-row>
+    </section>
+
+<!--    <section style="background-color:white;padding:10px;margin-bottom:10px;">
+        <h6>
+            <b>Delivery</b>
+        </h6>
+    </section>-->
+
+    <section style="background-color:white;padding:10px;margin-bottom:10px;">
+        <ion-row>
+            <ion-col size="12" style="padding:0;border-bottom:1px solid #f2f2f2;">
+                <ion-row>
+                    <ion-col size="6">
+                        <span style="text-align:left;">
+                            <b>Reviews&nbsp;({{currentInventory?.totalproductreview}})</b>
+                        </span>
+                    </ion-col>
+<!--                    <ion-col size="6" style="text-align:right !important;">
+                        <span>
+                            <small>Show All Reviews</small>
+                        </span>
+                    </ion-col>-->
+                </ion-row>
+            </ion-col>
+        </ion-row>
+
+        <ion-row>
+            <ion-col size="12">
+                <div *ngFor="let reviews of currentInventory?.reviews">
+                    <ion-row>
+                        <ion-col size="2">
+                            <img src="../../../assets/images/default_user_profile.jpg" style="width:30px;height:30px;border-radius:50%;border:1px solid lightblue;">
+                        </ion-col>
+                        <ion-col size="10">
+                            <ion-row>
+                                <ion-col size="12" style="padding:0;">
+                                    <star-rating [value]="reviews.rating" checkedcolor="#FFD100" uncheckedcolor="black" readonly="true"></star-rating>
+                                </ion-col>
+                            </ion-row>
+                            <ion-row>
+                                <ion-col size="12" style="font-size:12px;">
+                                    {{reviews.desc}}
+                                </ion-col>
+                            </ion-row>
+                        </ion-col>
+                    </ion-row>
+                </div>
+            </ion-col>
+        </ion-row>
+    </section>
+</ion-content>
+

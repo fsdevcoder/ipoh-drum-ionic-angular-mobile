@@ -1,0 +1,167 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "~@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "~@ionic/angular/css/normalize.css";
+@import "~@ionic/angular/css/structure.css";
+@import "~@ionic/angular/css/typography.css";
+@import '~@ionic/angular/css/display.css';
+
+/* Optional CSS utils that can be commented out */
+@import "~@ionic/angular/css/padding.css";
+@import "~@ionic/angular/css/float-elements.css";
+@import "~@ionic/angular/css/text-alignment.css";
+@import "~@ionic/angular/css/text-transformation.css";
+@import "~@ionic/angular/css/flex-utils.css";
+
+// Custom imported Font
+@import url('https://fonts.googleapis.com/css?family=Rubik&display=swap');
+
+* {
+    font-family: 'Rubik', sans-serif !important;
+}
+
+// Custom error messages
+.errorMessages {
+    color: #ff1749;
+    padding-left:10px;
+}
+
+// Custom input field
+input.ng-dirty.ng-invalid.ng-touched {
+    border: 1px solid #ff1749;
+}
+
+// Card Shadow
+.cardShadow {
+    -webkit-box-shadow: 0 0 5px;
+    -moz-box-shadow: 0 0 5px;
+    -box-shadow: 0 0 5px;
+    -webkit-transition: box-shadow 0.1s ease-in-out;
+    -moz-transition: box-shadow 0.1s ease-in-out;
+    -ms-transition: box-shadow 0.1s ease-in-out;
+    -o-transition: box-shadow 0.1s ease-in-out;
+}
+
+// To display inventory images in "Shop" page
+.productImage {
+    width:100%;
+    height:30vw;
+    object-fit:cover;
+}
+
+// To display inventory images in "ProductVariation" and "ShoppingCart" page
+.smallProductImage {
+    width:150px;
+    height:150px;
+    object-fit:cover;
+}
+
+// Custom Modal
+.dialog-modal .modal-wrapper{
+    width:100%;
+    height:70%;
+    border-top-right-radius:5px;
+    border-top-left-radius:5px;
+    bottom:0;
+    position:fixed;
+}
+
+// Store Management Custom Modal Size
+.store-management-modal .modal-wrapper {
+    width:100%;
+    height:45%;
+    bottom:0;
+    position:fixed;
+}
+
+// Article Management Custom Modal Size
+.article-management-modal .modal-wrapper{
+    width:100%;
+    height:20%;
+    bottom:0;
+    position:fixed;
+}
+
+// Channel Management Custom Modal Size
+.channel-management-modal .modal-wrapper{
+    width:100%;
+    height:20%;
+    bottom:0;
+    position:fixed;
+}
+
+// Inventory Families and Pattern Viewing
+.inv-family-pattern-modal .modal-wrapper{
+    width:100%;
+    height:80%;
+    border-top-right-radius:5px;
+    border-top-left-radius:5px;
+    bottom:0;
+    position:fixed;
+}
+
+// Payment Info Modal
+.payment-info-modal .modal-wrapper{
+    width:100%;
+    height:40%;
+    border-top-right-radius:5px;
+    border-top-left-radius:5px;
+    bottom:0;
+    position:fixed;
+}
+
+// Inventory Pattern Viewing
+.inv-pattern-modal .modal-wrapper{
+    width:100%;
+    height:80%;
+    border-top-right-radius:5px;
+    border-top-left-radius:5px;
+    bottom:0;
+    position:fixed;
+}
+
+// Custom Error Messages styling for wizard-step
+.error {
+    color: #ff1749;
+    padding-left:0;
+    margin-left:15px;
+    margin-bottom:0;
+}
+
+// Required text color
+.required {
+    color: #ff1749;
+}
+
+// Background colors
+.backgroundColor {
+    background: #0DE89B;
+    //background: linear-gradient(90deg, rgba(9,108,71,1) 12%, rgba(11,132,87,1) 34%, rgba(11,132,87,1) 46%, rgba(234,216,0,1) 93%);
+}
+
+// Dark green color background
+.darkGreenBackground {
+    background-color:#096c47;
+}
+
+// Light green color background
+.lightGreenBackground {
+    background-color:#0b8457;
+}
+
+// Skin color background
+.skinBackground {
+    background-color:#f8f1d0;
+}

@@ -1,0 +1,10 @@
+// Custom bullet color for "ion-swipe"
+ion-slides {
+  --bullet-background: #dedede;
+  --bullet-background-active: #ffffff;
+}
+
+// Custom styling of type="file" button
+input[type="file"] {
+  display: none;
+}

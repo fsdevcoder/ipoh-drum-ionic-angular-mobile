@@ -1,0 +1,150 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeCreateShippingModal(false)"></ion-icon>
+        </ion-col>
+        <ion-col size="10" style="text-align:left;white-space:normal;word-wrap:break-word;">
+          <b>Add Shipping Plans</b>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col size="12">
+      <ion-card style="margin:5px;">
+        <ion-card-header style="padding-top:0;border-bottom:1px solid #e6e6e6;">
+          <h4 style="margin-bottom:0;margin-top:15px;">
+            <b>Shipping Plan Details</b>
+          </h4>
+        </ion-card-header>
+        <ion-card-content style="padding:5px;" [formGroup]="shippingPlanFormGroup">
+          <ion-row>
+            <ion-col size="12">
+              <ion-row class="ion-align-items-center">
+                <ion-col size="4" style="font-weight:bold;">
+                  Shipping Plan Name<span class="required" *ngIf="shippingPlanFormGroup.get('shippingPlanName').invalid">*</span>
+                </ion-col>
+                <ion-col size="8">
+                  <input type="text" class="form-control"
+                         [(ngModel)]="shippingPlanNameModel"
+                         formControlName="shippingPlanName"
+                         [ngClass]="{'is-invalid': shippingPlanFormGroup.get('shippingPlanName').invalid && shippingPlanFormGroup.get('shippingPlanName').touched, 'is-valid': shippingPlanFormGroup.get('shippingPlanName').valid}">
+                  <ul class="error"
+                      *ngIf="shippingPlanFormGroup.get('shippingPlanName').invalid && shippingPlanFormGroup.get('shippingPlanName').touched">
+                    <li *ngIf="shippingPlanFormGroup.get('shippingPlanName').hasError('required')">
+                      Name is required.
+                    </li>
+                    <li *ngIf="shippingPlanFormGroup.get('shippingPlanName').hasError('maxlength')">
+                      Name cannot be more than {{shippingPlanNameMaxLength}} characters.
+                    </li>
+                  </ul>
+                </ion-col>
+              </ion-row>
+              <ion-row class="ion-align-items-center">
+                <ion-col size="4" style="font-weight:bold;">
+                  Description<span class="required" *ngIf="shippingPlanFormGroup.get('shippingPlanDescription').invalid">*</span>
+                </ion-col>
+                <ion-col size="8">
+                  <textarea rows="3" cols="20" class="form-control"
+                            [(ngModel)]="shippingPlanDescriptionModel"
+                            formControlName="shippingPlanDescription"
+                            [ngClass]="{'is-invalid': shippingPlanFormGroup.get('shippingPlanDescription').invalid && shippingPlanFormGroup.get('shippingPlanDescription').touched, 'is-valid': shippingPlanFormGroup.get('shippingPlanDescription').valid}"></textarea>
+                  <ul class="error"
+                      *ngIf="shippingPlanFormGroup.get('shippingPlanDescription').invalid && shippingPlanFormGroup.get('shippingPlanDescription').touched">
+                    <li *ngIf="shippingPlanFormGroup.get('shippingPlanDescription').hasError('required')">
+                      Description is required.
+                    </li>
+                    <li *ngIf="(shippingPlanFormGroup.get('shippingPlanDescription').hasError('minlength') || shippingPlanFormGroup.get('shippingPlanDescription').hasError('maxlength'))">
+                      Description must be between {{shippingPlanDescriptionMinLength}} to {{shippingPlanDescriptionMaxLength}} characters.
+                    </li>
+                  </ul>
+                </ion-col>
+              </ion-row>
+              <ion-row class="ion-align-items-center">
+                <ion-col size="4" style="font-weight:bold;">
+                  Shipping Price<span class="required" *ngIf="shippingPlanFormGroup.get('shippingPlanPrice').invalid">*</span>
+                </ion-col>
+                <ion-col size="8">
+                  <input type="text" class="form-control"
+                         [(ngModel)]="shippingPlanPriceModel"
+                         formControlName="shippingPlanPrice"
+                         [ngClass]="{'is-invalid': shippingPlanFormGroup.get('shippingPlanPrice').invalid && shippingPlanFormGroup.get('shippingPlanPrice').touched, 'is-valid': shippingPlanFormGroup.get('shippingPlanPrice').valid}">
+                  <ul class="error"
+                      *ngIf="shippingPlanFormGroup.get('shippingPlanPrice').invalid && shippingPlanFormGroup.get('shippingPlanPrice').touched">
+                    <li *ngIf="shippingPlanFormGroup.get('shippingPlanPrice').hasError('required')">
+                      Shipping Price is required.
+                    </li>
+                    <li *ngIf="shippingPlanFormGroup.get('shippingPlanPrice').hasError('maxlength')">
+                      Shipping Price cannot be more than {{shippingPlanPriceMaxLength}} digits.
+                    </li>
+                    <li *ngIf="shippingPlanFormGroup.get('shippingPlanPrice').hasError('pattern')">
+                      Invalid format for Shipping Price.
+                    </li>
+                  </ul>
+                </ion-col>
+              </ion-row>
+              <ion-row class="ion-align-items-center">
+                <ion-col size="4" style="font-weight:bold;">
+                  Max Weightage (KG)<span class="required" *ngIf="shippingPlanFormGroup.get('shippingPlanMaxWeightage').invalid">*</span>
+                </ion-col>
+                <ion-col size="8">
+                  <input type="text" class="form-control"
+                         [(ngModel)]="shippingPlanMaxWeightageModel"
+                         formControlName="shippingPlanMaxWeightage"
+                         [ngClass]="{'is-invalid': shippingPlanFormGroup.get('shippingPlanMaxWeightage').invalid && shippingPlanFormGroup.get('shippingPlanMaxWeightage').touched, 'is-valid': shippingPlanFormGroup.get('shippingPlanMaxWeightage').valid}">
+                  <ul class="error"
+                      *ngIf="shippingPlanFormGroup.get('shippingPlanMaxWeightage').invalid && shippingPlanFormGroup.get('shippingPlanMaxWeightage').touched">
+                    <li *ngIf="shippingPlanFormGroup.get('shippingPlanMaxWeightage').hasError('required')">
+                      Max Weightage (KG) is required.
+                    </li>
+                    <li *ngIf="shippingPlanFormGroup.get('shippingPlanMaxWeightage').hasError('maxlength')">
+                      Max Weightage (KG) cannot be more than {{shippingPlanMaxWeightageMaxLength}} digits.
+                    </li>
+                    <li *ngIf="shippingPlanFormGroup.get('shippingPlanMaxWeightage').hasError('pattern')">
+                      Invalid format for Max Weightage (KG).
+                    </li>
+                  </ul>
+                </ion-col>
+              </ion-row>
+              <ion-row class="ion-align-items-center">
+                <ion-col size="4" style="font-weight:bold;">
+                  Max Dimension<span class="required" *ngIf="shippingPlanFormGroup.get('shippingPlanMaxDimension').invalid">*</span>
+                </ion-col>
+                <ion-col size="8">
+                  <input type="text" class="form-control"
+                         [(ngModel)]="shippingPlanMaxDimensionModel"
+                         formControlName="shippingPlanMaxDimension"
+                         [ngClass]="{'is-invalid': shippingPlanFormGroup.get('shippingPlanMaxDimension').invalid && shippingPlanFormGroup.get('shippingPlanMaxDimension').touched, 'is-valid': shippingPlanFormGroup.get('shippingPlanMaxDimension').valid}">
+                  <ul class="error"
+                      *ngIf="shippingPlanFormGroup.get('shippingPlanMaxDimension').invalid && shippingPlanFormGroup.get('shippingPlanMaxDimension').touched">
+                    <li *ngIf="shippingPlanFormGroup.get('shippingPlanMaxDimension').hasError('required')">
+                      Max Dimension is required.
+                    </li>
+                    <li *ngIf="shippingPlanFormGroup.get('shippingPlanMaxDimension').hasError('maxlength')">
+                      Max Dimension cannot be more than {{shippingPlanMaxDimensionMaxLength}} digits.
+                    </li>
+                    <li *ngIf="shippingPlanFormGroup.get('shippingPlanMaxDimension').hasError('pattern')">
+                      Invalid format for Max Dimension.
+                    </li>
+                  </ul>
+                </ion-col>
+              </ion-row>
+              <ion-row class="ion-align-items-center">
+                <ion-col size="12">
+                  <ion-button expand="full" [disabled]="shippingPlanFormGroup?.invalid" (click)="createShippingPlan()">
+                    Create Shipping Plan
+                  </ion-button>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-content>

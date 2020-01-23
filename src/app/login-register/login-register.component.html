@@ -1,0 +1,201 @@
+<ion-content>
+<ion-row class="ion-align-items-center" style="height:100%;">
+  <ion-col size="12">
+    <ion-card *ngIf="showLoginCard">
+      <ion-card-header>
+        <ion-card-subtitle>
+          <h1>Ipoh Drum</h1>
+        </ion-card-subtitle>
+        <ion-card-title style="font-weight:bold;">Login</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content style="padding:5px;">
+        <ion-row [formGroup]="userLoginFormGroup">
+          <ion-col size="12">
+            <ion-row>
+              <ion-col size="12" style="font-weight:bold;">
+                EMAIL
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <input type="text" class="form-control" [(ngModel)]="userEmailLogin" (keydown.enter)="loginUser()" [ngClass]="{'is-invalid': userLoginFormGroup.get('userEmail').invalid && userLoginFormGroup.get('userEmail').touched, 'is-valid': userLoginFormGroup.get('userEmail').valid}" formControlName="userEmail" [autofocus]="true">
+                <ul class="errorMessages" *ngIf="userLoginFormGroup.get('userEmail').invalid && userLoginFormGroup.get('userEmail').touched">
+                  <li *ngIf="userLoginFormGroup.get('userEmail').hasError('required') && userLoginFormGroup.get('userEmail').touched">
+                    Email is required.
+                  </li>
+                  <li *ngIf="userLoginFormGroup.get('userEmail').hasError('email') && userLoginFormGroup.get('userEmail').touched">
+                    Invalid email format.
+                  </li>
+                </ul>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12" style="font-weight:bold;">
+                PASSWORD
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <show-hide-password size="xs" btnStyle="secondary" [btnOutline]="false">
+                  <input type="password" class="form-control" [(ngModel)]="userPasswordLogin" formControlName="userPassword" (keydown.enter)="loginUser()" [ngClass]="{'is-invalid': userLoginFormGroup.get('userPassword').invalid && userLoginFormGroup.get('userPassword').touched, 'is-valid': userLoginFormGroup.get('userPassword').valid}">
+                </show-hide-password>
+                <ul class="errorMessages" *ngIf="userLoginFormGroup.get('userPassword').invalid && userLoginFormGroup.get('userPassword').touched">
+                  <li *ngIf="userLoginFormGroup.get('userPassword').hasError('required') && userLoginFormGroup.get('userPassword').touched">
+                    Password is required.
+                  </li>
+                </ul>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-button expand="full" (click)="loginUser()" [disabled]="userLoginFormGroup.invalid">Login</ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row style="border-bottom:1px solid #e6e6e6;">
+          <ion-col size="12">
+            <ion-button fill="clear" (click)="changeToUserRegistrationCard()" style="font-weight:bold;white-space:normal;word-wrap:break-word;text-align:left !important;">
+              Not a member yet? Register here!
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-button (click)="navigateToHomePage()" fill="clear" style="font-weight:bold;white-space:normal;word-wrap:break-word;margin-top:10px;text-align:left !important;">
+              Take me to Home instead
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+    <ion-card *ngIf="showRegisterCard">
+      <ion-card-header>
+        <ion-card-subtitle>
+          <h1>Ipoh Drum</h1>
+        </ion-card-subtitle>
+        <ion-card-title style="font-weight:bold;">Register</ion-card-title>
+      </ion-card-header>
+      <ion-card-content style="padding:5px;">
+        <ion-row [formGroup]="userRegisterFormGroup">
+          <ion-col size="12">
+            <ion-row>
+              <ion-col size="12" style="font-weight:bold;">
+                USERNAME
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <input type="text" class="form-control" [(ngModel)]="userToRegister.name" formControlName="userNameFc" (keydown.enter)="registerUser()" [ngClass]="{'is-invalid': userRegisterFormGroup.get('userNameFc').invalid && userRegisterFormGroup.get('userNameFc').touched, 'is-valid': userRegisterFormGroup.get('userNameFc').valid}">
+                <ul class="errorMessages" *ngIf="userRegisterFormGroup.get('userNameFc').invalid && userRegisterFormGroup.get('userNameFc').touched">
+                  <li *ngIf="userRegisterFormGroup.get('userNameFc').hasError('required') && userRegisterFormGroup.get('userNameFc').touched">
+                    Username is required.
+                  </li>
+                  <li *ngIf="userRegisterFormGroup.get('userNameFc').hasError('minlength') && userRegisterFormGroup.get('userNameFc').touched">
+                    Username must contain at least {{minLengthOfUsername}} characters.
+                  </li>
+                  <li *ngIf="userRegisterFormGroup.get('userNameFc').hasError('maxlength') && userRegisterFormGroup.get('userNameFc').touched">
+                    Username cannot be more than {{maxLengthOfUsername}} characters.
+                  </li>
+                  <li *ngIf="userRegisterFormGroup.get('userNameFc').hasError('pattern') && userRegisterFormGroup.get('userNameFc').touched">
+                    Username can only contain alphabets and spaces.
+                  </li>
+                </ul>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12" style="font-weight:bold;">
+                EMAIL
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <input type="email" class="form-control" [(ngModel)]="userToRegister.email" formControlName="userEmailFc" (keydown.enter)="registerUser()" [ngClass]="{'is-invalid': userRegisterFormGroup.get('userEmailFc').invalid && userRegisterFormGroup.get('userEmailFc').touched, 'is-valid': userRegisterFormGroup.get('userEmailFc').valid}">
+                <ul class="errorMessages" *ngIf="userRegisterFormGroup.get('userEmailFc').invalid && userRegisterFormGroup.get('userEmailFc').touched">
+                  <li *ngIf="userRegisterFormGroup.get('userEmailFc').hasError('required') && userRegisterFormGroup.get('userEmailFc').touched">
+                    Email is required.
+                  </li>
+                  <li *ngIf="userRegisterFormGroup.get('userEmailFc').hasError('email') && userRegisterFormGroup.get('userEmailFc').touched">
+                    Invalid email format.
+                  </li>
+                </ul>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12" style="font-weight:bold;">
+                PASSWORD
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <show-hide-password size="xs" btnStyle="secondary" [btnOutline]="false">
+                  <input type="password" class="form-control" [(ngModel)]="passwordRegister" formControlName="userPasswordFc" (keydown.enter)="registerUser()" [ngClass]="{'is-invalid': userRegisterFormGroup.get('userPasswordFc').invalid && userRegisterFormGroup.get('userPasswordFc').touched, 'is-valid': userRegisterFormGroup.get('userPasswordFc').valid}">
+                </show-hide-password>
+                <ul class="errorMessages" *ngIf="userRegisterFormGroup.get('userPasswordFc').invalid && userRegisterFormGroup.get('userPasswordFc').touched">
+                  <li *ngIf="userRegisterFormGroup.get('userPasswordFc').hasError('required') && userRegisterFormGroup.get('userPasswordFc').touched">
+                    Password is required.
+                  </li>
+                  <li *ngIf="userRegisterFormGroup.get('userPasswordFc').hasError('minlength') && userRegisterFormGroup.get('userPasswordFc').touched">
+                    Password is too short.
+                  </li>
+                  <li *ngIf="userRegisterFormGroup.get('userPasswordFc').hasError('maxlength') && userRegisterFormGroup.get('userPasswordFc').touched">
+                    Password is too long.
+                  </li>
+                </ul>
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12" style="font-weight:bold;">
+                CONFIRM PASSWORD
+              </ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col size="12">
+                <show-hide-password size="xs" btnStyle="secondary" [btnOutline]="false">
+                  <input type="password" class="form-control" [(ngModel)]="confirmPasswordRegister" formControlName="userConfirmPasswordFc" (keydown.enter)="registerUser()" [pattern]="passwordRegister" [ngClass]="{'is-invalid': userRegisterFormGroup.get('userConfirmPasswordFc').invalid && userRegisterFormGroup.get('userConfirmPasswordFc').touched, 'is-valid': userRegisterFormGroup.get('userConfirmPasswordFc').valid}">
+                </show-hide-password>
+                <ul class="errorMessages" *ngIf="userRegisterFormGroup.get('userConfirmPasswordFc').invalid && userRegisterFormGroup.get('userConfirmPasswordFc').touched">
+                  <li *ngIf="userRegisterFormGroup.get('userConfirmPasswordFc').hasError('required') && userRegisterFormGroup.get('userConfirmPasswordFc').touched">
+                    Confirm password is required.
+                  </li>
+                  <li *ngIf="userRegisterFormGroup.get('userConfirmPasswordFc').hasError('minlength') && userRegisterFormGroup.get('userConfirmPasswordFc').touched">
+                   Confirm  Password is too short.
+                  </li>
+                  <li *ngIf="userRegisterFormGroup.get('userConfirmPasswordFc').hasError('maxlength') && userRegisterFormGroup.get('userConfirmPasswordFc').touched">
+                    Confirm Password is too long.
+                  </li>
+                  <li *ngIf="userRegisterFormGroup.get('userConfirmPasswordFc').hasError('pattern') && userRegisterFormGroup.get('userConfirmPasswordFc').touched">
+                    Passwords does not match.
+                  </li>
+                </ul>
+              </ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-button expand="full" (click)="registerUser()" [disabled]="userRegisterFormGroup.invalid">
+              Register
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row style="border-bottom:1px solid #e6e6e6;">
+          <ion-col size="12">
+            <ion-button fill="clear" (click)="changeToUserLoginCard()" style="font-weight:bold;white-space:normal;word-wrap:break-word;text-align:left !important;">
+              Already a member? Login here.
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-button (click)="navigateToHomePage()" fill="clear" style="font-weight:bold;white-space:normal;word-wrap:break-word;margin-top:10px;text-align:left !important;">
+              Take me to Home instead
+            </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-card-content>
+    </ion-card>
+  </ion-col>
+</ion-row>
+</ion-content>

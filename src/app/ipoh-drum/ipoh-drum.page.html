@@ -1,0 +1,21 @@
+<ion-tabs>
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="home" style="width:25%;">
+      <ion-icon name="home"></ion-icon>
+      <ion-label>Home</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="shop" style="width:25%;">
+      <ion-icon name="archive"></ion-icon>
+      <ion-label>Shop</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="shopping-cart" style="width:25%;">
+      <ion-icon name="cart"></ion-icon>
+      <ion-badge color="secondary" *ngIf="numberOfInventoriesInCart > 0">{{numberOfInventoriesInCart}}</ion-badge>
+      <ion-label>Shopping Cart</ion-label>
+    </ion-tab-button>
+    <ion-tab-button tab="user-profile" style="width:25%;">
+      <ion-icon name="contact"></ion-icon>
+      <ion-label>User Profile</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

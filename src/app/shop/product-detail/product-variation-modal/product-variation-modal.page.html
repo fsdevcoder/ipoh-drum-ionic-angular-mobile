@@ -1,0 +1,111 @@
+<ion-content>
+    <div style="padding:10px;">
+        <ion-row style="border-bottom:1px solid #f2f2f2;">
+            <ion-col size="12" style="text-align:right;">
+                <ion-icon name="close" (click)="closeModal()" style="font-size:25px;"></ion-icon>
+            </ion-col>
+        </ion-row>
+        <ion-row style="border-bottom:1px solid #f2f2f2;" class="ion-align-items-center">
+            <ion-col size="6">
+                <img [src]="selectedInventory?.imgpath" alt="product_image" class="smallProductImage">
+            </ion-col>
+            <ion-col size="6" style="padding-left:0;padding-right:0;">
+                <ng-container *ngIf="priceToDisplay === undefined || priceToDisplay === null else gotPriceToDisplay">
+                    <div style="color:#a8a8a8;font-weight:bold;text-align:left;white-space:normal;word-wrap:break-word;">
+                        <h4>
+                            Select variation below for Price
+                        </h4>
+                    </div>
+                </ng-container>
+                <ng-template #gotPriceToDisplay>
+                    <ng-container *ngIf="promotionsObject else noPromotionsObject">
+                        <h5 style="text-decoration:line-through;color:#e6e6e6;margin:0;">
+                            <ng-container *ngIf="selectedInventoryFamily">
+                                <ng-container *ngIf="selectedInventoryFamily.patterns.length > 0 && selectedInventoryPattern else showInventoryFamilyPrice">
+                                    {{selectedInventoryPattern?.price | myCurrency}}
+                                </ng-container>
+                                <ng-template #showInventoryFamilyPrice>
+                                    {{selectedInventoryFamily?.price | myCurrency}}
+                                </ng-template>
+                            </ng-container>
+                        </h5>
+                        <ng-container *ngIf="promotionsObject.discbyprice === 1 else discountByPercentage">
+                            -{{promotionsObject?.disc | myCurrency}}
+                        </ng-container>
+                        <ng-template #discountByPercentage>
+                            <ion-chip color="primary">
+                                -{{promotionsObject?.discpctg}}%
+                            </ion-chip>
+                        </ng-template>
+                        <div style="font-size:20px;">
+                            {{(priceToDisplay * quantitiesToAdd) | myCurrency}}
+                        </div>
+                    </ng-container>
+                    <ng-template #noPromotionsObject>
+                        <ion-label style="font-size:25px;font-weight:bold;">
+                            {{(priceToDisplay * quantitiesToAdd) | myCurrency}}
+                        </ion-label>
+                    </ng-template>
+                </ng-template>
+            </ion-col>
+        </ion-row>
+        <ion-row style="border-bottom:1px solid #f2f2f2;">
+            <ion-col size="12">
+                <h5><b>Variations</b></h5>
+                <ion-list>
+                    <div class="radio-toolbar">
+                        <span *ngFor="let variations of selectedInventory?.inventoryfamilies" style="margin-right:5px;">
+                            <input type="radio" [id]="'variations_' + variations?.id" name="variations" [value]="variations?.id"
+                                   (click)="selectInventoryFamily(variations)">
+                            <label [for]="'variations_' + variations?.id">
+                                {{variations?.name}}
+                            </label>
+                        </span>
+                    </div>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+        <ion-row style="border-bottom:1px solid #f2f2f2;" *ngIf="availableInventoryPatterns !== undefined && availableInventoryPatterns !== null">
+            <ion-col size="12">
+                <h5><b>Other Variations</b></h5>
+                <ion-list>
+                    <div class="radio-toolbar">
+                        <span *ngFor="let patterns of availableInventoryPatterns" style="margin-right:5px;">
+                            <input type="radio" [id]="'patterns_' + patterns?.id" name="otherVariations" [value]="patterns?.id" (click)="selectInventoryPattern(patterns)">
+                            <label [for]="'patterns_' + patterns?.id">
+                                {{patterns?.name}}
+                            </label>
+                        </span>
+                    </div>
+                </ion-list>
+            </ion-col>
+        </ion-row>
+        <ion-row style="border-bottom:1px solid #f2f2f2;">
+            <ion-col size="12">
+                <h5><b>Quantity</b></h5>
+                <div class="input-group" style="width:150px;">
+                    <div class="input-group-prepend">
+                        <button class="form-control" (click)="reduceQuantity()"
+                                [disabled]="quantitiesToAdd <= 1"
+                                style="border-top-right-radius:0;border-bottom-right-radius:0;">-
+                        </button>
+                    </div>
+                    <input type="text" class="form-control" readonly disabled [ngModel]="quantitiesToAdd"
+                           style="text-align:center;">
+                    <div class="input-group-append">
+                        <button class="form-control" (click)="addQuantity()"
+                                [disabled]="selectedInventory?.qty <= quantitiesToAdd"
+                                style="border-top-left-radius:0;border-bottom-left-radius:0;">+
+                        </button>
+                    </div>
+                </div>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col size="12">
+                <ion-button expand="full" (click)="addItemToCart()" [disabled]="!selectedInventoryFamily || (selectedInventoryFamily?.patterns?.length > 0 && !selectedInventoryPattern)">Add To Cart</ion-button>
+            </ion-col>
+        </ion-row>
+    </div>
+</ion-content>
+

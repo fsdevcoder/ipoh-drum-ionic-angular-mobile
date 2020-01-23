@@ -1,0 +1,264 @@
+<ion-content>
+  <ion-card>
+    <ion-buttons slot="start" style="padding:5px;">
+      <ion-menu-button style="border:1px solid #ebebeb;border-radius:5px;color:black;background:white;"></ion-menu-button>
+      <h3 style="color:white;width:100%;margin-left:10px;">
+        <b>My Profile</b>
+      </h3>
+    </ion-buttons>
+    <ion-row main>
+      <ion-col size="12">
+        <ion-row>
+          <ion-col size="12" style="color:white;text-align:center;">
+            <ion-icon name="contact" style="width:100px;height:100px;"></ion-icon>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12" style="text-align:center;">
+            <h3 style="color:white;margin-top:0;margin-bottom:0;">
+              <b>{{loggedInUser?.name}}</b>
+            </h3>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col size="12">
+            <ion-card [ngClass]="{'cardShadow' : editUserInformationPanelMode, '' : !editUserInformationPanelMode}" style="margin:0;background-color:white;">
+              <ng-container *ngIf="!editUserInformationPanelMode else editingMode">
+                <ion-card-header>
+                  <ion-row>
+                    <ion-col size="6" style="text-align:left;">
+                      <ion-badge [color]="+loggedInUser?.status === 1 ? 'success' : 'danger'"
+                                 style="text-align:left;padding:10px;">
+                        {{+loggedInUser?.status === 1 ? 'Active' : 'Inactive'}}
+                      </ion-badge>
+                    </ion-col>
+                    <ion-col size="6" style="text-align:right;">
+                      <ion-button color="warning" style="text-align:right;"
+                                  (click)="enableEditingUser()">
+                        <ion-icon name="create"></ion-icon>
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-card-header>
+                <ion-card-content>
+                  <ion-row style="margin-bottom:10px;">
+                    <ion-col size="12">
+                      <ion-row class="ion-align-items-center">
+                        <ion-col size="12">
+                          <b>EMAIL&nbsp;&nbsp;<ion-icon name="mail"></ion-icon>
+                          </b>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="12">
+                          {{loggedInUser?.email}}
+                        </ion-col>
+                      </ion-row>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row style="margin-bottom:10px;">
+                    <ion-col size="12">
+                      <ion-row>
+                        <ion-col size="12">
+                          <b>IC NO.&nbsp;&nbsp;<ion-icon name="finger-print"></ion-icon>
+                          </b>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="12">
+                          {{loggedInUser?.icno ? loggedInUser?.icno : 'NOT SET'}}
+                        </ion-col>
+                      </ion-row>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row style="margin-bottom:10px;">
+                    <ion-col size="12">
+                      <ion-row>
+                        <ion-col size="12">
+                          <b>MOBILE PHONE NUMBER&nbsp;&nbsp;<ion-icon name="call"></ion-icon>
+                          </b>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="12">
+                          {{loggedInUser?.tel1 ? loggedInUser?.tel1 : 'NOT SET'}}
+                        </ion-col>
+                      </ion-row>
+                    </ion-col>
+                  </ion-row>
+
+                  <ion-row style="margin-bottom:10px;">
+                    <ion-col size="12">
+                      <ion-row>
+                        <ion-col size="12">
+                          <b>ADDRESS&nbsp;&nbsp;<ion-icon name="home"></ion-icon>
+                          </b>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="12">
+                          {{loggedInUser?.address1 ? loggedInUser?.address1 : 'NOT SET'}}
+                        </ion-col>
+                      </ion-row>
+                    </ion-col>
+                  </ion-row>
+
+                  <ion-row>
+                    <ion-col size="12">
+                      <ion-row>
+                        <ion-col size="12">
+                          <b>ACCOUNT CREATED DATE:&nbsp;&nbsp;<ion-icon name="calendar"></ion-icon>
+                          </b>
+                        </ion-col>
+                      </ion-row>
+                      <ion-row>
+                        <ion-col size="12">
+                          {{loggedInUser?.created_at?.toString() | date: 'mediumDate'}}
+                        </ion-col>
+                      </ion-row>
+                    </ion-col>
+                  </ion-row>
+                </ion-card-content>
+              </ng-container>
+
+              <ng-template #editingMode>
+                <ion-card-header>
+                  <ion-row>
+                    <ion-col size="12" style="text-align:right;">
+                      <ion-button color="success" style="text-align:right;"
+                                  (click)="enableEditingUser()">
+                        <ion-icon name="create"></ion-icon>
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-card-header>
+                <ion-card-content [formGroup]="editingUserFormGroup">
+                  <ion-row>
+                    <ion-col size="12">
+                      <b>USERNAME</b>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <input type="text" class="form-control"
+                             [(ngModel)]="editingUserInformation.name"
+                             formControlName="userNameFc">
+                      <ul class="errorMessages" *ngIf="editingUserFormGroup.get('userNameFc').invalid && editingUserFormGroup.get('userNameFc').touched">
+                        <li *ngIf="editingUserFormGroup.get('userNameFc').hasError('required') && editingUserFormGroup.get('userNameFc').touched">
+                          Username is required.
+                        </li>
+                        <li *ngIf="editingUserFormGroup.get('userNameFc').hasError('minlength') && editingUserFormGroup.get('userNameFc').touched">
+                          Username must contain at least {{minLengthOfUsername}} characters.
+                        </li>
+                        <li *ngIf="editingUserFormGroup.get('userNameFc').hasError('maxlength') && editingUserFormGroup.get('userNameFc').touched">
+                          Username cannot be more than {{maxLengthOfUsername}} characters.
+                        </li>
+                        <li *ngIf="editingUserFormGroup.get('userNameFc').hasError('pattern') && editingUserFormGroup.get('userNameFc').touched">
+                          Username can only contain alphanumeric and spaces.
+                        </li>
+                      </ul>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <b>EMAIL
+                      </b>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <input type="email" class="form-control" required
+                             [(ngModel)]="editingUserInformation.email"
+                             formControlName="userEmailFc">
+                      <ul class="errorMessages" *ngIf="editingUserFormGroup.get('userEmailFc').invalid && editingUserFormGroup.get('userEmailFc').touched">
+                        <li *ngIf="editingUserFormGroup.get('userEmailFc').hasError('required') && editingUserFormGroup.get('userEmailFc').touched">
+                          Email is required.
+                        </li>
+                        <li *ngIf="editingUserFormGroup.get('userEmailFc').hasError('email') && editingUserFormGroup.get('userEmailFc').touched">
+                          Invalid email format.
+                        </li>
+                      </ul>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <b>IC NO.
+                      </b>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <input type="text" class="form-control"
+                             [(ngModel)]="editingUserInformation.icno"
+                             formControlName="userIcNoFc">
+                      <ul class="errorMessages" *ngIf="editingUserFormGroup.get('userIcNoFc').invalid && editingUserFormGroup.get('userIcNoFc').touched">
+                        <li *ngIf="editingUserFormGroup.get('userIcNoFc').hasError('required') && editingUserFormGroup.get('userIcNoFc').touched">
+                          IC Number is required.
+                        </li>
+                        <li *ngIf="editingUserFormGroup.get('userIcNoFc').hasError('minlength') && editingUserFormGroup.get('userIcNoFc').touched">
+                          IC Number must contain at least {{minLengthOfIc}} digits.
+                        </li>
+                        <li *ngIf="editingUserFormGroup.get('userIcNoFc').hasError('maxlength') && editingUserFormGroup.get('userIcNoFc').touched">
+                          IC Number cannot be more than {{minLengthOfIc}} digits.
+                        </li>
+                        <li *ngIf="editingUserFormGroup.get('userIcNoFc').hasError('pattern') && editingUserFormGroup.get('userIcNoFc').touched">
+                          Invalid IC Number format. (123456-78-9999)
+                        </li>
+                      </ul>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <b>MOBILE PHONE NUMBER
+                      </b>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <input type="text" class="form-control"
+                             [(ngModel)]="editingUserInformation.tel1"
+                             formControlName="userTel1Fc">
+                      <ul class="errorMessages" *ngIf="editingUserFormGroup.get('userTel1Fc').invalid && editingUserFormGroup.get('userTel1Fc').touched">
+                        <li *ngIf="editingUserFormGroup.get('userTel1Fc').hasError('required') && editingUserFormGroup.get('userTel1Fc').touched">
+                          Mobile Phone Number is required.
+                        </li>
+                        <li *ngIf="editingUserFormGroup.get('userTel1Fc').hasError('minlength') && editingUserFormGroup.get('userTel1Fc').touched">
+                          Mobile Phone Number cannot be less than {{maxLengthOfPhoneNumber}} digits.
+                        </li>
+                        <li *ngIf="editingUserFormGroup.get('userTel1Fc').hasError('maxlength') && editingUserFormGroup.get('userTel1Fc').touched">
+                          Mobile Phone Number cannot be more than {{maxLengthOfPhoneNumber}} digits.
+                        </li>
+                        <li *ngIf="editingUserFormGroup.get('userTel1Fc').hasError('pattern') && editingUserFormGroup.get('userTel1Fc').touched">
+                          Invalid Mobile Phone Number format. (Starts with '601')
+                        </li>
+                      </ul>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <b>ADDRESS
+                      </b>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <input type="text" class="form-control" [(ngModel)]="editingUserInformation.address1" formControlName="userAddress1Fc">
+                    </ion-col>
+                  </ion-row>
+                  <ion-row>
+                    <ion-col size="12">
+                      <ion-button color="primary" style="width:100%;"
+                                  (click)="updateUserInfo()">
+                        SUBMIT
+                      </ion-button>
+                    </ion-col>
+                  </ion-row>
+                </ion-card-content>
+              </ng-template>
+            </ion-card>
+          </ion-col>
+        </ion-row>
+      </ion-col>
+    </ion-row>
+  </ion-card>
+</ion-content>

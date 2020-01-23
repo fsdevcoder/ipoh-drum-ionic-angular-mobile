@@ -1,0 +1,295 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title style="padding:0 0 0 10px;">
+            <ion-row class="ion-align-items-center">
+                <ion-col size="2" style="text-align:left;padding:0;">
+                    <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeEditVideoModal(false)"></ion-icon>
+                </ion-col>
+                <ion-col size="8" style="text-align:left;">
+                    <b>Modify Video</b>
+                </ion-col>
+                <ion-col size="2" style="text-align:right;">
+                    <ion-button fill="clear" (click)="updateVideo()" [disabled]="videoInfoFormGroup.invalid
+                    || (!videoIsFreeFlagModel && videoNotFreeFormGroup.invalid)">
+                        <ion-icon name="checkmark" style="font-size:25px;"></ion-icon>
+                    </ion-button>
+                </ion-col>
+            </ion-row>
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ng-container *ngIf="isLoadingVideoInfo else finishedLoadingVideoInfo">
+        <ion-row>
+            <ion-col size="12" style="margin-top:10px;text-align:center !important;">
+                <img src="../../../../../assets/images/default_product.png" style="object-fit:cover;" class="rounded">
+            </ion-col>
+            <ion-col size="12" style="text-align:center;">
+                <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100px;margin:auto;"></ion-skeleton-text>
+                </ion-label>
+            </ion-col>
+        </ion-row>
+        <ion-row>
+            <ion-col size="12">
+                <ion-card style="padding:5px;">
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-list>
+                                <ion-item>
+                                    <ion-label>
+                                        <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                                    </ion-label>
+                                    <ion-label>
+                                        <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                                    </ion-label>
+                                </ion-item>
+                                <ion-item>
+                                    <ion-label>
+                                        <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                                    </ion-label>
+                                    <ion-label>
+                                        <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                                    </ion-label>
+                                </ion-item>
+                                <ion-item>
+                                    <ion-label>
+                                        <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                                    </ion-label>
+                                    <ion-label>
+                                        <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                                    </ion-label>
+                                </ion-item>
+                                <ion-item>
+                                    <ion-label>
+                                        <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                                    </ion-label>
+                                    <ion-label>
+                                        <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                                    </ion-label>
+                                </ion-item>
+                            </ion-list>
+                        </ion-col>
+                    </ion-row>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </ng-container>
+    <ng-template #finishedLoadingVideoInfo>
+        <ion-row>
+            <ion-col size="12" style="margin-top:10px;text-align:center;">
+                <ng-container *ngIf="temporaryVideoImageURL else showOriginalVideoImage">
+                    <img [src]="temporaryVideoImageURL"
+                         style="border-radius:50%;height:100px;width:100px;object-fit:cover;">
+                </ng-container>
+                <ng-template #showOriginalVideoImage>
+                    <img [src]="selectedVideo?.imgpath ? selectedVideo.imgpath : '../../../../assets/images/default_product.png'"
+                         style="border-radius:50%;height:100px;width:100px;object-fit:cover;">
+                </ng-template>
+            </ion-col>
+            <ng-container *ngIf="!temporaryVideoImageURL else uploadedTemporaryPhoto">
+                <ion-col size="12" style="text-align:center;">
+                    <ion-button fill="outline" (click)="openVideoImageFilePicker()">
+                        Change Photo
+                    </ion-button>
+                    <input type="file" multiple="false" style="display:none;" #videoImageContainer (change)="uploadVideoImage($event)">
+                </ion-col>
+            </ng-container>
+            <ng-template #uploadedTemporaryPhoto>
+                <ion-col size="6" style="text-align:center;">
+                    <ion-button fill="outline" color="warning" (click)="resetUploadedTempPhoto()">
+                        Reset
+                    </ion-button>
+                </ion-col>
+                <ion-col size="6" style="text-align:center;">
+                    <ion-button fill="outline" (click)="openVideoImageFilePicker()">
+                        Change Photo
+                    </ion-button>
+                    <input type="file" multiple="false" style="display:none;" #videoImageContainer (change)="uploadVideoImage($event)">
+                </ion-col>
+            </ng-template>
+        </ion-row>
+        <ion-row>
+            <ion-col size="12">
+                <ion-card style="padding:5px;">
+                    <ion-row>
+                        <ion-col size="12">
+                            <ion-list style="padding-top:0;padding-bottom:0;">
+                                <div [formGroup]="videoInfoFormGroup">
+                                    <ion-item>
+                                        <ion-label position="floating"><b>Video Title<span *ngIf="videoInfoFormGroup.get('videoTitle').invalid"
+                                                                                           class="required">&nbsp;*</span></b></ion-label>
+                                        <ion-input [(ngModel)]="selectedVideo.title"
+                                                   formControlName="videoTitle"></ion-input>
+                                    </ion-item>
+                                    <ul class="error"
+                                        *ngIf="videoInfoFormGroup.get('videoTitle').invalid && videoInfoFormGroup.get('videoTitle').touched">
+                                        <li *ngIf="videoInfoFormGroup.get('videoTitle').hasError('required')">
+                                            Title is required.
+                                        </li>
+                                        <li *ngIf="videoInfoFormGroup.get('videoTitle').hasError('maxlength')">
+                                            Title cannot contain more than {{videoTitleMaxLength}} characters.
+                                        </li>
+                                    </ul>
+                                    <ion-item>
+                                        <ion-label position="floating"><b>Description<span *ngIf="videoInfoFormGroup.get('videoDescription').invalid"
+                                                                                           class="required">&nbsp;*</span></b></ion-label>
+                                        <ion-textarea rows="5" cols="20" [(ngModel)]="selectedVideo.desc"
+                                                      formControlName="videoDescription"></ion-textarea>
+                                    </ion-item>
+                                    <ion-item>
+                                        <ion-label position="floating"><b>Video Link<span *ngIf="videoInfoFormGroup.get('videoLink').invalid"
+                                                                                          class="required">&nbsp;*</span></b></ion-label>
+                                        <ion-input [(ngModel)]="selectedVideo.videopath"
+                                                   formControlName="videoLink"></ion-input>
+                                    </ion-item>
+                                    <ul class="error"
+                                        *ngIf="videoInfoFormGroup.get('videoLink').invalid && videoInfoFormGroup.get('videoLink').touched">
+                                        <li *ngIf="videoInfoFormGroup.get('videoLink').hasError('required')">
+                                            Link is required.
+                                        </li>
+                                        <li *ngIf="videoInfoFormGroup.get('videoLink').hasError('maxlength')">
+                                            Link cannot contain more than {{videoLinkMaxLength}} characters.
+                                        </li>
+                                    </ul>
+                                    <ion-item>
+                                        <ion-label position="floating"><b>Video ID<span *ngIf="videoInfoFormGroup.get('videoId').invalid"
+                                                                                        class="required">&nbsp;*</span></b></ion-label>
+                                        <ion-input [(ngModel)]="selectedVideo.videopublicid"
+                                                   formControlName="videoId"></ion-input>
+                                    </ion-item>
+                                    <ul class="error"
+                                        *ngIf="videoInfoFormGroup.get('videoId').invalid && videoInfoFormGroup.get('videoId').touched">
+                                        <li *ngIf="videoInfoFormGroup.get('videoId').hasError('required')">
+                                            Video ID is required.
+                                        </li>
+                                        <li *ngIf="videoInfoFormGroup.get('videoId').hasError('maxlength')">
+                                            Video ID cannot contain more than {{videoIdMaxLength}} characters.
+                                        </li>
+                                    </ul>
+                                    <ion-item>
+                                        <ion-label position="floating"><b>Total Length<span *ngIf="videoInfoFormGroup.get('videoTotalLength').invalid"
+                                                                                            class="required">&nbsp;*</span></b></ion-label>
+                                        <ion-input [(ngModel)]="selectedVideo.totallength"
+                                                   formControlName="videoTotalLength"></ion-input>
+                                    </ion-item>
+                                    <ul class="error"
+                                        *ngIf="videoInfoFormGroup.get('videoTotalLength').invalid && videoInfoFormGroup.get('videoTotalLength').touched">
+                                        <li *ngIf="videoInfoFormGroup.get('videoTotalLength').hasError('required')">
+                                            Total Length is required.
+                                        </li>
+                                        <li *ngIf="videoInfoFormGroup.get('videoTotalLength').hasError('maxlength')">
+                                            Total Length cannot contain more than {{videoTotalLengthMaxLength}}
+                                            characters.
+                                        </li>
+                                    </ul>
+                                    <ion-item>
+                                        <ion-row class="ion-align-items-center">
+                                            <ion-col size="9" style="white-space:normal;word-wrap:break-word;">
+                                                Is This Video Public?
+                                            </ion-col>
+                                            <ion-col size="3">
+                                                <ion-toggle color="success" [checked]="videoIsPublicFlagModel"
+                                                            [(ngModel)]="videoIsPublicFlagModel"
+                                                            formControlName="videoIsPublicFlag"></ion-toggle>
+                                            </ion-col>
+                                        </ion-row>
+                                    </ion-item>
+                                    <ion-item>
+                                        <ion-row class="ion-align-items-center">
+                                            <ion-col size="9" style="white-space:normal;word-wrap:break-word;">
+                                                Is Video Free to Watch?
+                                            </ion-col>
+                                            <ion-col size="3">
+                                                <ion-toggle color="success"
+                                                            (ionChange)="toggleVideoIsFreeFlag()"
+                                                            [checked]="videoIsFreeFlagModel"
+                                                            [(ngModel)]="videoIsFreeFlagModel"
+                                                            formControlName="videoIsFreeFlag"></ion-toggle>
+                                            </ion-col>
+                                        </ion-row>
+                                    </ion-item>
+                                </div>
+
+                                <ng-container *ngIf="!videoIsFreeFlagModel">
+                                    <div [formGroup]="videoNotFreeFormGroup">
+                                        <ion-item>
+                                            <ion-label position="floating"><b>Video Price<span *ngIf="videoNotFreeFormGroup.get('videoPrice').invalid"
+                                                                                               class="required">&nbsp;*</span></b></ion-label>
+                                            <ion-input [(ngModel)]="selectedVideo.price"
+                                                       formControlName="videoPrice"></ion-input>
+                                        </ion-item>
+                                        <ul class="error"
+                                            *ngIf="videoNotFreeFormGroup.get('videoPrice').invalid && videoNotFreeFormGroup.get('videoPrice').touched">
+                                            <li *ngIf="videoNotFreeFormGroup.get('videoPrice').hasError('required')">
+                                                Price(RM) is required.
+                                            </li>
+                                            <li *ngIf="videoNotFreeFormGroup.get('videoPrice').hasError('pattern')">
+                                                Invalid format for Price(RM).
+                                            </li>
+                                        </ul>
+                                        <ion-item>
+                                            <ion-row class="ion-align-items-center">
+                                                <ion-col size="9" style="white-space:normal;word-wrap:break-word;">
+                                                    <b>Discounted by Price?</b>
+                                                </ion-col>
+                                                <ion-col size="3">
+                                                    <ion-toggle color="success"
+                                                                (ionChange)="toggleVideoDiscountedByPrice()"
+                                                                [checked]="videoDiscountedByPriceFlagModel"
+                                                                [(ngModel)]="videoDiscountedByPriceFlagModel"
+                                                                formControlName="videoDiscountedByPriceFlag"></ion-toggle>
+                                                </ion-col>
+                                            </ion-row>
+                                        </ion-item>
+                                        <ng-container *ngIf="videoDiscountedByPriceFlagModel">
+                                            <ion-item>
+                                                <ion-label position="floating"><b>Discounted Price(RM)<span *ngIf="videoNotFreeFormGroup.get('videoDiscountedPrice').invalid"
+                                                                                                            class="required">&nbsp;*</span></b></ion-label>
+                                                <ion-input [(ngModel)]="selectedVideo.disc"
+                                                           formControlName="videoDiscountedPrice"></ion-input>
+                                            </ion-item>
+                                            <ul class="error"
+                                                *ngIf="videoNotFreeFormGroup.get('videoDiscountedPrice').invalid && videoNotFreeFormGroup.get('videoDiscountedPrice').touched">
+                                                <li *ngIf="videoNotFreeFormGroup.get('videoDiscountedPrice').hasError('required')">
+                                                    Discounted Price(RM) is required.
+                                                </li>
+                                                <li *ngIf="videoNotFreeFormGroup.get('videoDiscountedPrice').hasError('pattern')">
+                                                    Invalid format for Discounted Price(RM).
+                                                </li>
+                                                <li *ngIf="videoNotFreeFormGroup.get('videoDiscountedPrice').hasError('min')">
+                                                    Discounted Price(RM) must be larger than RM0.
+                                                </li>
+                                            </ul>
+                                        </ng-container>
+                                        <ng-container *ngIf="!videoDiscountedByPriceFlagModel">
+                                            <ion-item>
+                                                <ion-label position="floating"><b>Discounted Percentage(%)<span *ngIf="videoNotFreeFormGroup.get('videoDiscountedPercentage').invalid"
+                                                                                                                class="required">&nbsp;*</span></b></ion-label>
+                                                <ion-input [(ngModel)]="selectedVideo.discpctg"
+                                                           formControlName="videoDiscountedPercentage"></ion-input>
+                                            </ion-item>
+                                            <ul class="error"
+                                                *ngIf="videoNotFreeFormGroup.get('videoDiscountedPercentage').invalid && videoNotFreeFormGroup.get('videoDiscountedPercentage').touched">
+                                                <li *ngIf="videoNotFreeFormGroup.get('videoDiscountedPercentage').hasError('required')">
+                                                    Discounted Percentage(%) is required.
+                                                </li>
+                                                <li *ngIf="videoNotFreeFormGroup.get('videoDiscountedPercentage').hasError('pattern')">
+                                                    Invalid format for Discounted Percentage(%).
+                                                </li>
+                                                <li *ngIf="videoNotFreeFormGroup.get('videoDiscountedPercentage').hasError('min') || videoNotFreeFormGroup.get('videoDiscountedPercentage').hasError('max')">
+                                                    Discounted Percentage(%) must be between 1 - 100.
+                                                </li>
+                                            </ul>
+                                        </ng-container>
+                                    </div>
+                                </ng-container>
+                            </ion-list>
+                        </ion-col>
+                    </ion-row>
+                </ion-card>
+            </ion-col>
+        </ion-row>
+    </ng-template>
+</ion-content>

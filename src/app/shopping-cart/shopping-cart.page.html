@@ -1,0 +1,142 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-row class="ion-align-items-center">
+            <ion-col size="6" style="text-align:left;">
+                <span style="font-weight:bold;">
+                    &nbsp;&nbsp;My Item<span
+                        *ngIf="listOfInventoriesInCart?.length > 1">s</span>&nbsp;
+                  <ion-chip>{{listOfInventoriesInCart?.length}}</ion-chip>
+                  </span>
+            </ion-col>
+            <ion-col size="6" style="text-align:right;">
+                <ion-button (click)="clearShoppingCart()" style="font-weight:bold;" color="warning"
+                            [disabled]="listOfInventoriesInCart === undefined
+                            || listOfInventoriesInCart === null
+                            || listOfInventoriesInCart?.length === 0">
+                  Clear Cart
+                </ion-button>
+            </ion-col>
+        </ion-row>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="listOfInventoriesInCart?.length > 0 else noInventoriesInCart">
+    <section style="margin-bottom:10px;">
+      <ion-card style="background-color:white !important;" *ngFor="let inventory of listOfInventoriesInCart;let i = index;">
+        <ion-card-header style="padding:5px 5px 0 10px;">
+          <div style="white-space:normal;word-wrap:break-word;font-weight:bold;font-size:20px;border-bottom:1px solid #e6e6e6;">
+            {{inventory?.name}}
+          </div>
+        </ion-card-header>
+        <ion-card-content style="padding:0;">
+          <ion-row class="ion-align-items-center">
+            <ion-col size="12" style="padding-top:0;">
+              <ion-row>
+                <ion-col size="5" class="align-self-center">
+                  <img [src]="inventory?.imgpath" alt="item_img" class="smallProductImage rounded">
+                </ion-col>
+                <ion-col size="7">
+                  <ng-container *ngIf="inventory.selectedInventoryFamily">
+                    <div style="margin-top:5px;border-bottom:1px solid #e6e6e6;">
+                      <ion-chip color="success">
+                        {{inventory?.selectedInventoryFamily.name}}
+                      </ion-chip>
+                      <ng-container *ngIf="inventory.selectedInventoryPattern && (inventory.selectedInventoryPattern.id !== nullSelectedInventoryPatternId)">
+                        <ion-chip color="success">
+                          {{inventory?.selectedInventoryPattern.name}}
+                        </ion-chip>
+                      </ng-container>
+                    </div>
+                  </ng-container>
+                  <div>
+                    <ng-container *ngIf="inventory?.promotion else noPromotionsObject">
+                      <span style="text-decoration:line-through;color:#e6e6e6;margin:0;">
+                        <ng-container *ngIf="inventory?.selectedInventoryPattern?.id === 9999 else showOriginalInventoryPatternPrice">
+                          {{inventory?.selectedInventoryFamily?.price | myCurrency}}
+                        </ng-container>
+                        <ng-template #showOriginalInventoryPatternPrice>
+                          {{inventory?.selectedInventoryPattern?.price | myCurrency}}
+                        </ng-template>
+                      </span>
+                      <ng-container *ngIf="inventory?.promotion.discbyprice === 1 else showDiscountByPercentage">
+                        <span>
+                          -{{inventory?.promotion?.disc | myCurrency}}
+                        </span>
+                      </ng-container>
+                      <ng-template #showDiscountByPercentage>
+                        <ion-chip color="primary" style="margin:3px 0 0 0;">
+                          <span>
+                            -{{inventory?.promotion?.discpctg}}%
+                          </span>
+                        </ion-chip>
+                      </ng-template>
+                      <div style="font-size:18px;">
+                        <ng-container *ngIf="inventory?.selectedInventoryPattern?.id === 9999 else showInventoryPatternPrice">
+                          <ng-container *ngIf="inventory?.promotion?.discbyprice === 1 else familyDiscountByPercentage">
+                            {{((inventory?.selectedInventoryFamily?.price - inventory?.promotion?.disc) * inventory?.selectedQuantity) | myCurrency}}
+                          </ng-container>
+                          <ng-template #familyDiscountByPercentage>
+                            {{((inventory?.selectedInventoryFamily?.price - (inventory?.selectedInventoryFamily?.price * (inventory?.promotion?.discpctg / 100))) * inventory?.selectedQuantity)| myCurrency}}
+                          </ng-template>
+                        </ng-container>
+                        <ng-template #showInventoryPatternPrice>
+                          <ng-container *ngIf="inventory?.promotion?.discbyprice === 1 else patternDiscountByPercentage">
+                            {{((inventory?.selectedInventoryPattern?.price - inventory?.promotion?.disc) * inventory?.selectedQuantity) | myCurrency}}
+                          </ng-container>
+                          <ng-template #patternDiscountByPercentage>
+                            {{((inventory?.selectedInventoryPattern?.price - (inventory?.selectedInventoryPattern?.price * (inventory?.promotion?.discpctg / 100))) * inventory?.selectedQuantity) | myCurrency}}
+                          </ng-template>
+                        </ng-template>
+                      </div>
+                    </ng-container>
+                    <ng-template #noPromotionsObject>
+                      <div style="font-size:18px;">
+                        <ng-container *ngIf="inventory?.selectedInventoryFamily && inventory?.selectedInventoryPattern.id === 9999 else showPatternPrice">
+                          {{(inventory?.selectedInventoryFamily?.price * inventory?.selectedQuantity) | myCurrency}}
+                        </ng-container>
+                        <ng-template #showPatternPrice>
+                          {{(inventory?.selectedInventoryPattern?.price * inventory?.selectedQuantity) | myCurrency}}
+                        </ng-template>
+                      </div>
+                    </ng-template>
+                  </div>
+                  <div style="margin-top:5px;">
+                    <div class="input-group" style="width:150px;">
+                      <div class="input-group-prepend">
+                        <button class="form-control" (click)="reduceInventoryQuantity(inventory, i)"
+                                style="border-top-right-radius:0;border-bottom-right-radius:0;">-</button>
+                      </div>
+                      <input type="text" class="form-control" readonly disabled style="text-align:center;" [(ngModel)]="inventory.selectedQuantity">
+                      <div class="input-group-append">
+                        <button class="form-control" (click)="increaseInventoryQuantity(inventory)"
+                                style="border-top-left-radius:0;border-bottom-left-radius:0;">+</button>
+                      </div>
+                    </div>
+                  </div>
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+        </ion-card-content>
+      </ion-card>
+    </section>
+    <section style="text-align:center;">
+      <ion-button (click)="checkout()" color="warning" style="width:80%;">
+        Checkout
+      </ion-button>
+    </section>
+  </ng-container>
+  <ng-template #noInventoriesInCart>
+    <ion-row class="ion-align-items-center" style="height:100%;">
+      <ion-col size="12" style="text-align:center;color:#e6e6e6;">
+        <h3>
+          <ion-icon name="cart" style="font-size:8rem;"></ion-icon>
+          <br>
+          Your cart is empty! <br>Start browsing!
+          <br>
+        </h3>
+      </ion-col>
+    </ion-row>
+  </ng-template>
+</ion-content>

@@ -1,0 +1,150 @@
+<ng-container *ngIf="isLoadingListOfPublicVideos else finishedLoadingListOfPublicVideos">
+    <ion-card style="margin-bottom:10px;margin-top:0;background-color:white !important;">
+        <img src="../../../assets/images/default_product.png" style="object-fit:cover;"/>
+        <ion-card-header style="padding-top:5px;padding-bottom:0;">
+            <ion-label>
+                <ion-skeleton-text animated="true"></ion-skeleton-text>
+            </ion-label>
+        </ion-card-header>
+        <ion-card-content style="padding-bottom:0;">
+            <ion-row>
+                <ion-col size="12">
+                    <ion-row>
+                        <ion-col size="3">
+                            <ion-avatar>
+                                <ion-skeleton-text animated="true"></ion-skeleton-text>
+                            </ion-avatar>
+                        </ion-col>
+                        <ion-col size="9">
+                            <ion-label style="width:60%;">
+                                <ion-skeleton-text animated="true"></ion-skeleton-text>
+                            </ion-label>
+                            <br>
+                            <ion-label style="width:40%;">
+                                <ion-skeleton-text animated="true"></ion-skeleton-text>
+                            </ion-label>
+                        </ion-col>
+                    </ion-row>
+                </ion-col>
+            </ion-row>
+        </ion-card-content>
+    </ion-card>
+    <ion-card style="margin-bottom:10px;background-color:white !important;">
+        <img src="../../../assets/images/default_product.png" style="object-fit:cover;"/>
+        <ion-card-header style="padding-top:5px;padding-bottom:0;">
+            <ion-label>
+                <ion-skeleton-text animated="true"></ion-skeleton-text>
+            </ion-label>
+        </ion-card-header>
+        <ion-card-content style="padding-bottom:0;">
+            <ion-row>
+                <ion-col size="12">
+                    <ion-row>
+                        <ion-col size="3">
+                            <ion-avatar>
+                                <ion-skeleton-text animated="true"></ion-skeleton-text>
+                            </ion-avatar>
+                        </ion-col>
+                        <ion-col size="9">
+                            <ion-label style="width:60%;">
+                                <ion-skeleton-text animated="true"></ion-skeleton-text>
+                            </ion-label>
+                            <br>
+                            <ion-label style="width:40%;">
+                                <ion-skeleton-text animated="true"></ion-skeleton-text>
+                            </ion-label>
+                        </ion-col>
+                    </ion-row>
+                </ion-col>
+            </ion-row>
+        </ion-card-content>
+    </ion-card>
+</ng-container>
+<ng-template #finishedLoadingListOfPublicVideos>
+    <ion-refresher slot="fixed" (ionRefresh)="ionRefresh($event)">
+        <ion-refresher-content
+                pullingText="Pull to Refresh"
+                refreshingSpinner="crescent">
+        </ion-refresher-content>
+    </ion-refresher>
+    <ion-card style="margin-bottom:10px;margin-top:0;background-color:white !important;" *ngFor="let video of listOfPublicVideos;let i = index;"
+              (click)="playSelectedVideo(video.uid)">
+        <div class="play-button-div">
+            <img [src]="video.imgpath" [alt]="'vid_' + i" *ngIf="video.imgpath" style="object-fit:cover;"/>
+            <img src="../../../assets/images/default_product.png" [alt]="'vid_' + i" *ngIf="!video.imgpath"
+                 style="object-fit:cover;"/>
+            <ion-icon name="play" class="play-button-icon" style="color:white;font-size:4rem;border:3px solid white;border-radius:50%;"></ion-icon>
+        </div>
+        <ion-card-header style="padding-top:5px;padding-bottom:0;">
+            <ion-card-title>
+                <b>
+                    {{video?.title}}
+                </b>
+            </ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+            <!--<ion-row>
+                <ion-col size="12">
+                    <ion-row>
+                        <ion-col size="3">
+                            <img src="../../../assets/images/default_user_profile.jpg"
+                                 style="width:30px;height:30px;border:1px solid #f0f0f0;border-radius:50%;"
+                                 alt="userProfile">
+                        </ion-col>
+                        <ion-col size="9">
+                            ChannelName
+                            <br>
+                            Views: {{video?.view}}
+                        </ion-col>
+                    </ion-row>
+                </ion-col>
+            </ion-row>-->
+            <ion-row>
+                <ion-col size="12" style="padding-left:0;">
+                    <b>Views&nbsp;</b>{{video?.view}}
+                </ion-col>
+                <ion-col size="12" style="padding-left:0;">
+                    <b>Uploaded On&nbsp;</b>{{video?.created_at | date: 'mediumDate'}}
+                </ion-col>
+                <ion-col size="12" style="padding-left:0;">
+                    <!-- TODO: If video is not free, show price -->
+                    <ng-container *ngIf="video?.free !== 1">
+                        <ng-container *ngIf="video?.promoprice else noPromoPrice">
+                            <ion-row>
+                                <ion-col size="12" style="padding:0;">
+                                    <span style="text-decoration:line-through;color:grey;">
+                                        {{video?.price | myCurrency}}
+                                    </span>
+                                    &nbsp;
+                                    <ng-container *ngIf="video?.discbyprice === 1 else discountedByPercentage">
+                                        <ion-chip color="primary" style="font-size:18px;">
+                                            -{{video?.disc | myCurrency}}%
+                                        </ion-chip>
+                                    </ng-container>
+                                    <ng-template #discountedByPercentage>
+                                        <ion-chip color="primary" style="font-size:18px;">
+                                            -{{video?.promopctg}}%
+                                        </ion-chip>
+                                    </ng-template>
+                                </ion-col>
+                            </ion-row>
+                            <span class="badge badge-primary" style="font-size:18px;">
+                                {{video?.promoprice | myCurrency}}
+                            </span>
+                        </ng-container>
+                        <ng-template #noPromoPrice>
+                            <span class="badge badge-primary" style="font-size:18px;">
+                                {{video?.price | myCurrency}}
+                            </span>
+                        </ng-template>
+                    </ng-container>
+                </ion-col>
+            </ion-row>
+        </ion-card-content>
+    </ion-card>
+    <ion-infinite-scroll threshold="10px" (ionInfinite)="loadMoreVideos($event)">
+        <ion-infinite-scroll-content
+                loadingSpinner="crescent">
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+</ng-template>

@@ -1,0 +1,9 @@
+// Custom background color for ion-content
+ion-content{
+  --ion-background-color: #f2f2f2 !important;
+}
+
+// Unresizable textarea
+textarea {
+  resize: none;
+}

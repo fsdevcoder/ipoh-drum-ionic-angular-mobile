@@ -1,0 +1,225 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeEditBlogModal(false)"></ion-icon>
+        </ion-col>
+        <ion-col size="8" style="text-align:left;">
+          <b>Modify Blogger</b>
+        </ion-col>
+        <ion-col size="2" style="text-align:right;">
+          <ion-button fill="clear" (click)="updateBlogger()" [disabled]="blogInfoFormGroup?.invalid || (companyBelongingsFlag && (selectedBlogger?.company === undefined || selectedBlogger?.company === null))">
+            <ion-icon name="checkmark" style="font-size:25px;"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="isLoadingBloggerInfo else finishedLoadingBloggerInfo">
+    <ion-row>
+      <ion-col size="12" style="margin-top:10px;text-align:center !important;">
+        <ion-avatar style="height:100px;width:100px;margin:auto;">
+          <ion-skeleton-text animated="true"></ion-skeleton-text>
+        </ion-avatar>
+      </ion-col>
+      <ion-col size="12" style="text-align:center;">
+        <ion-label>
+          <ion-skeleton-text animated="true" style="width:100px;margin:auto;"></ion-skeleton-text>
+        </ion-label>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card style="padding:5px;">
+          <ion-row>
+            <ion-col size="12">
+              <ion-list>
+                <ion-item>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                  </ion-label>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                  </ion-label>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                  </ion-label>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:40%;"></ion-skeleton-text>
+                  </ion-label>
+                  <ion-label>
+                    <ion-skeleton-text animated="true" style="width:100%;"></ion-skeleton-text>
+                  </ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ng-container>
+  <ng-template #finishedLoadingBloggerInfo>
+    <div [formGroup]="blogInfoFormGroup">
+      <ion-row>
+        <ion-col size="12" style="margin-top:10px;text-align:center;">
+          <ng-container *ngIf="temporaryBlogImageUrl else showOriginalBloggerImage">
+            <img [src]="temporaryBlogImageUrl" style="border-radius:50%;height:100px;width:100px;object-fit:cover;">
+          </ng-container>
+          <ng-template #showOriginalBloggerImage>
+            <img [src]="selectedBlogger?.imgpath ? selectedBlogger.imgpath : '../../../../assets/images/default_product.png'" style="border-radius:50%;height:100px;width:100px;object-fit:cover;">
+          </ng-template>
+        </ion-col>
+        <ng-container *ngIf="!temporaryBlogImageUrl else uploadedTemporaryPhoto">
+          <ion-col size="12" style="text-align:center;">
+            <ion-button fill="outline" (click)="openBloggerImageFilePicker()">
+              Change Photo
+            </ion-button>
+            <input type="file" multiple="false" style="display:none;" #bloggerImageContainer (change)="uploadBloggerImage($event)">
+          </ion-col>
+        </ng-container>
+        <ng-template #uploadedTemporaryPhoto>
+          <ion-col size="6" style="text-align:center;">
+            <ion-button fill="outline" color="warning" (click)="resetUploadedTempPhoto()">
+              Reset
+            </ion-button>
+          </ion-col>
+          <ion-col size="6" style="text-align:center;">
+            <ion-button fill="outline" (click)="openBloggerImageFilePicker()">
+              Change Photo
+            </ion-button>
+            <input type="file" multiple="false" style="display:none;" #videoImageContainer (change)="uploadBloggerImage($event)">
+          </ion-col>
+        </ng-template>
+      </ion-row>
+      <ion-row>
+        <ion-col size="12">
+          <ion-card style="padding:5px;">
+            <ion-row>
+              <ion-col size="12">
+                <ion-list style="padding-top:0;padding-bottom:0;">
+                  <ion-item>
+                    <ion-label position="floating">Name</ion-label>
+                    <ion-input [(ngModel)]="selectedBlogger.name" formControlName="blogName"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="blogInfoFormGroup.get('blogName').invalid && blogInfoFormGroup.get('blogName').touched">
+                    <li *ngIf="blogInfoFormGroup.get('blogName').hasError('required') && blogInfoFormGroup.get('blogName').touched">
+                      Name is required.
+                    </li>
+                    <li *ngIf="(blogInfoFormGroup.get('blogName').hasError('minlength') || blogInfoFormGroup.get('blogName').hasError('maxlength'))&& blogInfoFormGroup.get('blogName').touched">
+                      Name must be between {{blogNameMinLength}} to {{blogNameMaxLength}} characters.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-label position="floating">Description</ion-label>
+                    <ion-textarea [(ngModel)]="selectedBlogger.desc" formControlName="blogDescription"></ion-textarea>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="blogInfoFormGroup.get('blogDescription').invalid && blogInfoFormGroup.get('blogDescription').touched">
+                    <li *ngIf="blogInfoFormGroup.get('blogDescription').hasError('required') && blogInfoFormGroup.get('blogDescription').touched">
+                      Description is required.
+                    </li>
+                    <li *ngIf="(blogInfoFormGroup.get('blogDescription').hasError('minlength') || blogInfoFormGroup.get('blogDescription').hasError('maxlength')) && blogInfoFormGroup.get('blogDescription').touched">
+                      Description must be between {{blogDescriptionMinLength}} to {{blogDescriptionMaxLength}} characters.
+                    </li>
+                  </ul>
+                  <ion-item>
+                    <ion-label position="floating">Email</ion-label>
+                    <ion-input [(ngModel)]="selectedBlogger.email" formControlName="blogEmail"></ion-input>
+                  </ion-item>
+                  <ul class="error"
+                      *ngIf="blogInfoFormGroup.get('blogEmail').invalid && blogInfoFormGroup.get('blogEmail').touched">
+                    <li *ngIf="blogInfoFormGroup.get('blogEmail').hasError('required') && blogInfoFormGroup.get('blogEmail').touched">
+                      Email is required.
+                    </li>
+                    <li *ngIf="blogInfoFormGroup.get('blogEmail').hasError('email') && blogInfoFormGroup.get('blogEmail').touched">
+                      Invalid Email format. Should be (johndoe@domain.com)
+                    </li>
+                  </ul>
+                </ion-list>
+              </ion-col>
+            </ion-row>
+          </ion-card>
+          <ion-card style="padding:5px;">
+            <ion-row class="ion-align-items-center">
+              <ion-col size="9">
+                Belongs to A Company?
+              </ion-col>
+              <ion-col size="3">
+                <ion-toggle color="success"
+                            [checked]="companyBelongingsFlag" formControlName="blogCompanyBelongings"
+                            [(ngModel)]="companyBelongingsFlag">
+                </ion-toggle>
+              </ion-col>
+            </ion-row>
+            <ng-container *ngIf="companyBelongingsFlag">
+              <ion-row class="ion-align-items-center" style="border-top:1px solid #f2f2f2;">
+                <ion-col size="12">
+                  <ion-row class="ion-align-items-center">
+                    <ion-col size="5">
+                      Currently Selected Company
+                    </ion-col>
+                    <ion-col size="7">
+                      <ionic-selectable
+                              formControlName="blogSelectedCompany"
+                              [placeholder]="'Select a Company'"
+                              [(ngModel)]="selectedBlogger.company"
+                              [items]="listOfCompanies"
+                              [hasInfiniteScroll]="true"
+                              (onInfiniteScroll)="retrieveMoreCompanies($event)"
+                              (onSearch)="searchForCompanies($event)"
+                              [canSearch]="true"
+                              itemValueField="id"
+                              itemTextField="name">
+                      </ionic-selectable>
+                    </ion-col>
+                  </ion-row>
+                  <ion-row class="ion-align-items-center" *ngIf="selectedBlogger?.company">
+                    <ion-col size="12">
+                      <div class="alert alert-primary" role="alert" style="margin-bottom:0;padding:5px;">
+                        <span style="white-space:normal;word-wrap:break-word;">
+                            {{selectedBlogger?.company?.name}}
+                        </span>
+                        <br>
+                        <span style="white-space:normal;word-wrap:break-word;">
+                          {{selectedBlogger?.company?.address1}}
+                        </span>
+                        <br>
+                        <span style="white-space:normal;word-wrap:break-word;">
+                          {{selectedBlogger?.company?.email1}}
+                        </span>
+                        <br>
+                        <span style="white-space:normal;word-wrap:break-word;">
+                          {{selectedBlogger?.company?.tel1}}
+                        </span>
+                      </div>
+                    </ion-col>
+                  </ion-row>
+                </ion-col>
+              </ion-row>
+            </ng-container>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </div>
+  </ng-template>
+</ion-content>

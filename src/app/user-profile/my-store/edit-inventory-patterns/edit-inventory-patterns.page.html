@@ -1,0 +1,127 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title style="padding:0 0 0 10px;">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="2" style="text-align:left;padding:0;">
+          <ion-icon name="arrow-back" style="font-size:25px;" (click)="closeEditInventoryPatternModal()"></ion-icon>
+        </ion-col>
+        <ion-col size="8" style="text-align:left;white-space:normal;word-wrap:break-word;">
+          <b>Modify Inventory Patterns</b>
+        </ion-col>
+        <ion-col size="2">
+          <ion-button fill="clear" [disabled]="inventoryPatternFormGroup.invalid" (click)="closeAndPassEditedInventoryPatternModal()">
+            <ion-icon name="checkmark"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-row>
+    <ion-col size="12">
+      <ion-card style="margin:0;padding:5px;">
+        <ion-list [formGroup]="inventoryPatternFormGroup">
+          <ion-item>
+            <ion-label position="floating">Name</ion-label>
+            <ion-input [(ngModel)]="referenceInventoryPatternsToEdit.name" formControlName="inventoryPatternName"></ion-input>
+          </ion-item>
+          <ul class="error"
+              *ngIf="inventoryPatternFormGroup.get('inventoryPatternName').invalid && inventoryPatternFormGroup.get('inventoryPatternName').touched">
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternName').hasError('required') && inventoryPatternFormGroup.get('inventoryPatternName').touched">
+              Pattern Name is required.
+            </li>
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternName').hasError('maxlength') && inventoryPatternFormGroup.get('inventoryPatternName').touched">
+              Pattern Name cannot be more
+              than {{inventoryPatternNameMaxLength}} characters.
+            </li>
+          </ul>
+          <ion-item>
+            <ion-label position="floating">Description</ion-label>
+            <ion-textarea [(ngModel)]="referenceInventoryPatternsToEdit.desc" formControlName="inventoryPatternDescription"></ion-textarea>
+          </ion-item>
+          <ul class="error"
+              *ngIf="inventoryPatternFormGroup.get('inventoryPatternDescription').invalid && inventoryPatternFormGroup.get('inventoryPatternDescription').touched">
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternDescription').hasError('required') && inventoryPatternFormGroup.get('inventoryPatternDescription').touched">
+              Pattern Description is required.
+            </li>
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternDescription').hasError('minlength') && inventoryPatternFormGroup.get('inventoryPatternDescription').touched">
+              Pattern Description must have at
+              least {{inventoryPatternDescMinLength}} characters.
+            </li>
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternDescription').hasError('maxlength') && inventoryPatternFormGroup.get('inventoryPatternDescription').touched">
+              Pattern Description cannot be more
+              than {{inventoryPatternDescMaxLength}} characters.
+            </li>
+          </ul>
+          <ion-item>
+            <ion-label position="floating">Cost</ion-label>
+            <ion-input [(ngModel)]="referenceInventoryPatternsToEdit.cost" formControlName="inventoryPatternCost"></ion-input>
+          </ion-item>
+          <ul class="error"
+              *ngIf="inventoryPatternFormGroup.get('inventoryPatternCost').invalid && inventoryPatternFormGroup.get('inventoryPatternCost').touched">
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternCost').hasError('required') && inventoryPatternFormGroup.get('inventoryPatternCost').touched">
+              Pattern Cost is required.
+            </li>
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternCost').hasError('maxlength') && inventoryPatternFormGroup.get('inventoryPatternCost').touched">
+              Pattern Cost cannot be more
+              than {{inventoryPatternCostMaxLength}} characters.
+            </li>
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternCost').hasError('pattern') && inventoryPatternFormGroup.get('inventoryPatternCost').touched">
+              Pattern Cost format must be [123] or [123.00].
+            </li>
+          </ul>
+          <ion-item>
+            <ion-label position="floating">
+              Selling Price
+            </ion-label>
+            <ion-input [(ngModel)]="referenceInventoryPatternsToEdit.price" formControlName="inventoryPatternSellingPrice"></ion-input>
+          </ion-item>
+          <ul class="error"
+              *ngIf="inventoryPatternFormGroup.get('inventoryPatternSellingPrice').invalid && inventoryPatternFormGroup.get('inventoryPatternSellingPrice').touched">
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternSellingPrice').hasError('required') && inventoryPatternFormGroup.get('inventoryPatternSellingPrice').touched">
+              Pattern Selling Price is required.
+            </li>
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternSellingPrice').hasError('maxlength') && inventoryPatternFormGroup.get('inventoryPatternSellingPrice').touched">
+              Pattern Selling Price cannot be more
+              than {{inventoryPatternSellingPriceMaxLength}} characters.
+            </li>
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternSellingPrice').hasError('pattern') && inventoryPatternFormGroup.get('inventoryPatternSellingPrice').touched">
+              Pattern Selling Price format must be [123] or [123.00].
+            </li>
+          </ul>
+          <ion-item>
+            <ion-label position="floating">
+              Quantity
+            </ion-label>
+            <ion-input [(ngModel)]="referenceInventoryPatternsToEdit.qty" formControlName="inventoryPatternStockQuantity"></ion-input>
+          </ion-item>
+          <ul class="error"
+              *ngIf="inventoryPatternFormGroup.get('inventoryPatternStockQuantity').invalid && inventoryPatternFormGroup.get('inventoryPatternStockQuantity').touched">
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternStockQuantity').hasError('required') && inventoryPatternFormGroup.get('inventoryPatternStockQuantity').touched">
+              Pattern Stock Quantity is required.
+            </li>
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternStockQuantity').hasError('maxlength') && inventoryPatternFormGroup.get('inventoryPatternStockQuantity').touched">
+              Pattern Stock Quantity cannot be more
+              than {{inventoryPatternStockQuantityMaxLength}} characters.
+            </li>
+            <li *ngIf="inventoryPatternFormGroup.get('inventoryPatternStockQuantity').hasError('pattern') && inventoryPatternFormGroup.get('inventoryPatternStockQuantity').touched">
+              Pattern Stock Quantity must contain digits only.
+            </li>
+          </ul>
+          <ion-item>
+            <ion-row class="ion-align-items-center">
+              <ion-col size="7">
+                On Sale
+              </ion-col>
+              <ion-col size="5">
+                <ion-toggle color="success" [(ngModel)]="inventoryPatternOnSaleFlagModel" [checked]="inventoryPatternOnSaleFlagModel" formControlName="inventoryPatternOnSaleFlag"></ion-toggle>
+              </ion-col>
+            </ion-row>
+          </ion-item>
+        </ion-list>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-content>
